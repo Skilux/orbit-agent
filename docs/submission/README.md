@@ -10,7 +10,7 @@ Everything the Loomi Connect AI Hackathon portal asks for. Deadline: **June 2, 1
 | **MCP Usage Explanation** | ✅ | [`mcp-usage.md`](mcp-usage.md) | ✅ paste-ready |
 | **Responsible AI Note** | ✅ | [`responsible-ai-note.md`](responsible-ai-note.md) | ✅ paste-ready |
 | **GitHub Repo** | optional | repo root + [`../../README.md`](../../README.md) | ✅ public/setup ready |
-| **Presentation Deck** | optional | — | ⬜ optional |
+| **Presentation Deck** | optional | [`../../demo/orbit-deck.pdf`](../../demo/orbit-deck.pdf) (8-page PDF) · per-slide PNGs in [`../../demo/deck/`](../../demo/deck/) | ✅ ready |
 | **Team Details** | (form) | [`team.md`](team.md) | ⬜ fill in |
 
 ## Before you submit
