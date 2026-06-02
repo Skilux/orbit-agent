@@ -1,0 +1,671 @@
+openapi: 3.1.0
+info:
+  title: Bloomreach Engagement Data API (Partial)
+  version: "1.0.0"
+  description: >
+    OpenAPI 3.1.0 specification for a subset of the Bloomreach Engagement (formerly Exponea)
+    REST API focused on key customer, event tracking, export, and analysis endpoints. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/about)
+    This file is intended for use with tools that generate MCP servers from OpenAPI definitions and
+    is not an official specification from Bloomreach.
+
+servers:
+  - url: https://api.exponea.com
+    description: Default Bloomreach Engagement API base URL. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/authentication)
+
+security:
+  - basicAuth: []
+
+components:
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      description: >
+        HTTP Basic authentication using the private API Key ID as username and the API Secret as password
+        for private access to the Engagement Data API. [tray](https://tray.ai/documentation/connectors/service/bloomreach)
+
+  schemas:
+    CustomerIds:
+      type: object
+      description: >
+        Map of customer identifier types to their values, such as registered, cookie, or other hard/soft IDs. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/add-event)
+      additionalProperties:
+        type: string
+
+    EventProperties:
+      type: object
+      description: >
+        Arbitrary key-value properties associated with an event. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/docs/custom-events)
+      additionalProperties:
+        oneOf:
+          - type: string
+          - type: number
+          - type: boolean
+          - type: array
+            items:
+              oneOf:
+                - type: string
+                - type: number
+                - type: boolean
+          - type: object
+
+    AddEventRequest:
+      type: object
+      required:
+        - customer_ids
+        - event_type
+      properties:
+        customer_ids:
+          $ref: "#/components/schemas/CustomerIds"
+        properties:
+          $ref: "#/components/schemas/EventProperties"
+        timestamp:
+          type: string
+          description: >
+            Event creation time as UNIX timestamp in seconds or ISO8601 date-time; if not provided,
+            the current time is used. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/add-event)
+        event_type:
+          type: string
+          description: >
+            Logical name of the event, such as purchase, page_view, or a custom event type. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/docs/custom-events)
+
+    BasicSuccessResponse:
+      type: object
+      description: >
+        Generic success wrapper used by multiple Engagement endpoints. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/customer-properties-test)
+      properties:
+        success:
+          type: boolean
+          description: >
+            Indicates whether the request was accepted for processing. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/customer-properties-test)
+        errors:
+          description: >
+            Error details when success is false. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/add-event)
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+
+    ErrorResponse:
+      type: object
+      description: >
+        Standard error payload for Engagement APIs. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/customer-properties-test)
+      properties:
+        success:
+          type: boolean
+          description: >
+            Indicates overall request success; often false for error responses. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/add-event)
+        errors:
+          description: >
+            List or message describing validation or processing errors. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/add-event)
+          oneOf:
+            - type: string
+            - type: array
+              items:
+                type: string
+        message:
+          type: string
+          description: Human-readable error message, when provided.
+
+    CustomerAttributeObject:
+      type: object
+      description: >
+        Attribute object describing a customer attribute to retrieve via the customer attributes
+        cluster API. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/customer-attributes-2)
+      required:
+        - type
+      properties:
+        type:
+          type: string
+          description: >
+            Attribute type, for example property, segmentation, id, prediction, recommendation, or expression. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/customer-attributes-2)
+        property:
+          type: string
+          description: >
+            Name of the customer property to retrieve when type is property. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/customer-properties-test)
+        id:
+          type: string
+          description: >
+            Identifier of the segmentation, ID type, prediction, or other analysis depending on type. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/customer-segmentations-test)
+        aggregation:
+          type: string
+          description: >
+            Name of aggregation or expression to retrieve, when applicable. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/customer-attributes-2)
+        catalog:
+          type: string
+          description: >
+            Catalog identifier used for recommendation attributes, when applicable. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/customer-attributes-2)
+
+    CustomerAttributesRequest:
+      type: object
+      required:
+        - customer_ids
+        - attributes
+      properties:
+        customer_ids:
+          $ref: "#/components/schemas/CustomerIds"
+        attributes:
+          type: array
+          description: >
+            List of attribute objects describing which customer attributes to retrieve for the given customer IDs. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/customer-attributes-2)
+          items:
+            $ref: "#/components/schemas/CustomerAttributeObject"
+
+    CustomerAttributesResultItem:
+      type: object
+      description: >
+        Result item for a single requested attribute. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/customer-properties-test)
+      properties:
+        success:
+          type: boolean
+          description: >
+            Indicates whether the attribute value was resolved successfully. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/customer-properties-test)
+        value:
+          description: >
+            Returned value for the requested attribute when successful. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/customer-properties-test)
+        error:
+          type: string
+          description: >
+            Error description when success is false for this attribute. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/customer-properties-test)
+
+    CustomerAttributesResponse:
+      type: object
+      description: >
+        Response wrapper for the customer attributes cluster API. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/customer-attributes-2)
+      properties:
+        results:
+          type: array
+          description: >
+            Per-attribute results in the same order as requested. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/customer-properties-test)
+          items:
+            $ref: "#/components/schemas/CustomerAttributesResultItem"
+        success:
+          type: boolean
+          description: >
+            Indicates whether the overall request was processed successfully. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/customer-properties-test)
+
+    ExportAttributesListItem:
+      type: object
+      description: >
+        Definition of a single attribute to export when using type: some. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/export-all-customers-2)
+      properties:
+        type:
+          type: string
+          description: >
+            Attribute category, such as id, property, or other supported attribute types. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/export-all-customers-2)
+        id:
+          type: string
+          description: >
+            Identifier of an ID or analysis attribute when type is id. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/export-all-customers-2)
+        property:
+          type: string
+          description: >
+            Name of a customer property to export when type is property. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/export-all-customers-2)
+
+    ExportAttributesDefinition:
+      type: object
+      description: >
+        Controls which attributes are exported by the Export all customers endpoint. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/export-all-customers-2)
+      properties:
+        type:
+          type: string
+          description: >
+            some = only attributes listed in list;
+            properties_and_ids = all properties and identifiers (default). [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/export-all-customers-2)
+          enum:
+            - some
+            - properties_and_ids
+        list:
+          type: array
+          description: >
+            Attributes to export when type is some. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/export-all-customers-2)
+          items:
+            $ref: "#/components/schemas/ExportAttributesListItem"
+
+    ExportFilterDefinition:
+      type: object
+      description: >
+        Filter definition limiting which customers are exported. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/export-all-customers-2)
+      properties:
+        type:
+          type: string
+          description: >
+            segment = customers from a segment; all = all customers (default). [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/export-all-customers-2)
+          enum:
+            - segment
+            - all
+        segmentation_id:
+          type: string
+          description: >
+            ID of the segmentation applied for filtering customers. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/export-all-customers-2)
+        segment_index:
+          type: integer
+          format: int32
+          description: >
+            Index of the segment within the segmentation; only customers from this segment are exported.
+            Indexed from 0; non-matching customers belong to segment_index -1. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/export-all-customers-2)
+
+    ExportAllCustomersRequest:
+      type: object
+      description: >
+        Request body for exporting all or a filtered subset of customers. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/export-all-customers-2)
+      required:
+        - format
+      properties:
+        attributes:
+          $ref: "#/components/schemas/ExportAttributesDefinition"
+        filter:
+          $ref: "#/components/schemas/ExportFilterDefinition"
+        execution_time:
+          type: integer
+          format: int32
+          description: >
+            Timestamp at which the customer filter and attributes should be evaluated; defaults to current time. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/export-all-customers-2)
+        timezone:
+          type: string
+          description: >
+            Time zone used when evaluating filters and attributes, in Continent/City format; defaults to UTC. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/export-all-customers-2)
+        format:
+          type: string
+          description: >
+            Output format of the export. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/export-all-customers-2)
+          enum:
+            - csv
+            - table_json
+
+    ExportAnalysisRequest:
+      type: object
+      description: >
+        Request body for retrieving report or segmentation analysis results. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/reports-2)
+      required:
+        - analysis_id
+        - format
+      properties:
+        analysis_id:
+          type: string
+          description: >
+            Identifier of the report or segmentation to retrieve. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/segmentations-2)
+        execution_time:
+          description: >
+            Timestamp at which the analysis should be evaluated; defaults to current time. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/reports-2)
+          oneOf:
+            - type: string
+            - type: integer
+              format: int64
+        timezone:
+          type: string
+          description: >
+            Time zone used for evaluation; defaults to UTC. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/segmentations-2)
+        format:
+          type: string
+          description: >
+            Output format of the analysis results. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/reports-2)
+          enum:
+            - csv
+            - table_json
+
+    ExportAnalysisResponse:
+      type: object
+      description: >
+        Response wrapper for report and segmentation retrieval in JSON table format. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/segmentations-2)
+      properties:
+        name:
+          type: string
+          description: >
+            Name of the requested report or segmentation. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/reports-2)
+        header:
+          type: array
+          description: >
+            Column names for the tabular result. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/segmentations-2)
+          items:
+            type: string
+        rows:
+          type: array
+          description: >
+            Row values aligned with the header. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/reports-2)
+          items:
+            type: array
+            items: {}
+        success:
+          type: boolean
+          description: >
+            Indicates whether the request succeeded. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/segmentations-2)
+
+    TriggerExportRequest:
+      type: object
+      description: >
+        Optional payload when triggering an existing export; many use cases send an empty body. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/exports)
+      additionalProperties: true
+
+  responses:
+    BadRequestError:
+      description: >
+        Request was invalid or could not be processed. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/add-event)
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+
+    UnauthorizedError:
+      description: >
+        Authentication credentials are missing or invalid. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/authentication)
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+
+    ForbiddenError:
+      description: >
+        Authenticated but lacking required permissions for this operation. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/docs/customers)
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+
+    TooManyRequestsError:
+      description: >
+        Too many requests have been sent in a given amount of time; retry later. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/about)
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+
+    InternalServerError:
+      description: >
+        Unexpected server-side error in the Engagement API. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/about)
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+
+paths:
+  /track/v2/projects/{projectToken}/customers/events:
+    post:
+      operationId: addEvent
+      summary: Add event for customer
+      description: >
+        Add a single event to the timeline of a specific customer profile in Bloomreach Engagement.
+        Use this endpoint to track purchases, page views, or any custom event types from your backend systems. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/docs/swym)
+      tags:
+        - Events
+      security:
+        - basicAuth: []
+      parameters:
+        - name: projectToken
+          in: path
+          required: true
+          description: >
+            Project token identifying the Engagement project. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/add-event)
+          schema:
+            type: string
+      requestBody:
+        required: true
+        description: >
+          Event payload including customer identifiers, event type, optional properties, and timestamp. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/add-event)
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/AddEventRequest"
+      responses:
+        "200":
+          description: >
+            Event accepted for asynchronous processing. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/add-event)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BasicSuccessResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "429":
+          $ref: "#/components/responses/TooManyRequestsError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /data/v2/projects/{projectToken}/customers/attributes:
+    post:
+      operationId: getCustomerAttributes
+      summary: Retrieve customer attributes
+      description: >
+        Retrieve different customer attributes for a single customer profile using the cluster customer attributes API.
+        Use this endpoint to fetch properties, segmentations, IDs, predictions, recommendations, or expressions in a single call. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/customer-attributes-2)
+      tags:
+        - Customers
+      security:
+        - basicAuth: []
+      parameters:
+        - name: projectToken
+          in: path
+          required: true
+          description: >
+            Project token identifying the Engagement project. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/customer-attributes-2)
+          schema:
+            type: string
+      requestBody:
+        required: true
+        description: >
+          Customer IDs and list of attribute objects specifying which attributes to retrieve. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/customer-attributes-2)
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CustomerAttributesRequest"
+      responses:
+        "200":
+          description: >
+            Attributes successfully resolved for the specified customer. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/customer-attributes-2)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CustomerAttributesResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "429":
+          $ref: "#/components/responses/TooManyRequestsError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /data/v2/projects/{projectToken}/customers/export:
+    post:
+      operationId: exportAllCustomers
+      summary: Export all or filtered customers
+      description: >
+        Retrieve all customers in a project or a filtered subset as a CSV or JSON table export.
+        Use this GDPR-focused endpoint when you need bulk customer data, typically for downstream processing or subject access requests. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/docs/custom-integrations)
+      tags:
+        - Customers
+      security:
+        - basicAuth: []
+      parameters:
+        - name: projectToken
+          in: path
+          required: true
+          description: >
+            Project token identifying the Engagement project. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/export-all-customers-2)
+          schema:
+            type: string
+      requestBody:
+        required: true
+        description: >
+          Export configuration including attributes, filters, evaluation time, timezone, and output format. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/export-all-customers-2)
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExportAllCustomersRequest"
+      responses:
+        "200":
+          description: >
+            Export job created and data returned or made available depending on configuration. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/export-all-customers-2)
+          content:
+            application/json:
+              schema:
+                type: object
+                description: >
+                  Export response payload; structure depends on format and project configuration.
+                  For table_json, the response mimics a tabular structure similar to analysis exports. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/reports-2)
+                additionalProperties: true
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "429":
+          $ref: "#/components/responses/TooManyRequestsError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /data/v2/projects/{projectToken}/analyses/report:
+    post:
+      operationId: getReport
+      summary: Retrieve report results
+      description: >
+        Retrieve calculated results of an existing report analysis as a CSV or JSON table.
+        Use this endpoint to programmatically access materialized report data created in the Engagement UI. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/reports-2)
+      tags:
+        - Analyses
+      security:
+        - basicAuth: []
+      parameters:
+        - name: projectToken
+          in: path
+          required: true
+          description: >
+            Project token identifying the Engagement project. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/reports-2)
+          schema:
+            type: string
+      requestBody:
+        required: true
+        description: >
+          Report analysis identifier, evaluation time, timezone, and desired output format. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/reports-2)
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExportAnalysisRequest"
+      responses:
+        "200":
+          description: >
+            Report results successfully retrieved. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/reports-2)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExportAnalysisResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "429":
+          $ref: "#/components/responses/TooManyRequestsError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /data/v2/projects/{projectToken}/analyses/segmentation:
+    post:
+      operationId: getSegmentation
+      summary: Retrieve segmentation results
+      description: >
+        Retrieve calculated results of an existing customer segmentation as a CSV or JSON table.
+        Use this endpoint to fetch segment sizes and metrics for segment-based analyses. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/segmentations-2)
+      tags:
+        - Analyses
+      security:
+        - basicAuth: []
+      parameters:
+        - name: projectToken
+          in: path
+          required: true
+          description: >
+            Project token identifying the Engagement project. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/segmentations-2)
+          schema:
+            type: string
+      requestBody:
+        required: true
+        description: >
+          Segmentation analysis identifier, evaluation time, timezone, and output format. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/segmentations-2)
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ExportAnalysisRequest"
+      responses:
+        "200":
+          description: >
+            Segmentation results successfully retrieved. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/segmentations-2)
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ExportAnalysisResponse"
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "429":
+          $ref: "#/components/responses/TooManyRequestsError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+
+  /data/v2/projects/{projectToken}/exports/{export_id}/start:
+    post:
+      operationId: startExport
+      summary: Trigger an existing export
+      description: >
+        Trigger an existing export definition by its export_id.
+        Use this endpoint to start a configured export run programmatically instead of scheduling or manual execution. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/docs/data-exports)
+      tags:
+        - Exports
+      security:
+        - basicAuth: []
+      parameters:
+        - name: projectToken
+          in: path
+          required: true
+          description: >
+            Project token identifying the Engagement project. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/exports)
+          schema:
+            type: string
+        - name: export_id
+          in: path
+          required: true
+          description: >
+            Identifier of an existing export definition in the project. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/exports)
+          schema:
+            type: string
+      requestBody:
+        required: false
+        description: >
+          Optional payload for export triggering; many use cases send an empty JSON object. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/exports)
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TriggerExportRequest"
+      responses:
+        "200":
+          description: >
+            Export successfully triggered if it was not already running. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/exports)
+          content:
+            application/json:
+              schema:
+                type: object
+                description: >
+                  Export start response; structure depends on project configuration. [documentation.bloomreach](https://documentation.bloomreach.com/engagement/reference/exports)
+                additionalProperties: true
+        "400":
+          $ref: "#/components/responses/BadRequestError"
+        "401":
+          $ref: "#/components/responses/UnauthorizedError"
+        "403":
+          $ref: "#/components/responses/ForbiddenError"
+        "429":
+          $ref: "#/components/responses/TooManyRequestsError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"

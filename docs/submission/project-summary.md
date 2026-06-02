@@ -1,0 +1,3 @@
+# Project Summary
+
+> Orbit is a closed-loop campaign agent for lean marketing teams. A marketer gives it a plain-language goal ("find me a revenue opportunity"), and the agent discovers a real cohort in the Bloomreach data via Loomi Connect MCP, proposes a complete campaign — audience, offer, and authored email copy — and, only after a human approves, builds the artifacts, ships the campaign, and monitors results to propose the next iteration. It turns the manual, multi-tool "discover → build → send → measure → iterate" cycle into one agent-driven loop, while keeping a human in control of every campaign-facing action.

@@ -1,0 +1,2304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=1920">
+<title>Orbit — Your Marketing Team's Next AI Teammate</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@200;300;400;500;600;700;800&family=JetBrains+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+/* ─────────────────────────────────────────────────────────────
+   DESIGN TOKENS
+──────────────────────────────────────────────────────────────── */
+:root {
+  /* Palette */
+  --space-void:    #030509;
+  --space-deep:    #070c14;
+  --space-mid:     #0b1220;
+  --space-nebula:  #0f1a2e;
+
+  --cyan-vivid:    #00d4e8;
+  --cyan-glow:     #00afc4;
+  --cyan-dim:      #0087a0;
+  --cyan-ghost:    rgba(0, 212, 232, 0.08);
+  --cyan-border:   rgba(0, 212, 232, 0.22);
+
+  --amber-vivid:   #f59e0b;
+  --amber-glow:    #d97706;
+  --amber-dim:     #92400e;
+  --amber-ghost:   rgba(245, 158, 11, 0.10);
+  --amber-border:  rgba(245, 158, 11, 0.28);
+
+  --loomi-vivid:   #22d3a5;
+  --loomi-dim:     rgba(34, 211, 165, 0.6);
+  --write-vivid:   #f87171;
+  --write-dim:     rgba(248, 113, 113, 0.6);
+  --purple-vivid:  #a78bfa;
+  --purple-dim:    rgba(167, 139, 250, 0.6);
+
+  --text-primary:  #f0f4f8;
+  --text-secondary:#8ba4bc;
+  --text-muted:    #4a6278;
+
+  /* Glass surfaces */
+  --glass-bg:      rgba(11, 18, 32, 0.70);
+  --glass-border:  rgba(255, 255, 255, 0.07);
+  --glass-hover:   rgba(0, 212, 232, 0.05);
+
+  /* Spacing rhythm (8px base) */
+  --s1: 8px;   --s2: 16px;  --s3: 24px;  --s4: 32px;
+  --s5: 40px;  --s6: 48px;  --s7: 64px;  --s8: 80px;
+
+  /* Type scale */
+  --text-xs:  0.75rem;
+  --text-sm:  0.875rem;
+  --text-md:  1rem;
+  --text-lg:  1.25rem;
+  --text-xl:  1.5rem;
+  --text-2xl: 2rem;
+  --text-3xl: 2.75rem;
+  --text-4xl: 3.5rem;
+  --text-5xl: 5rem;
+  --text-6xl: 7rem;
+
+  --font-display: 'Sora', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+
+  /* Transitions */
+  --ease-out:  cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in:   cubic-bezier(0.7, 0, 0.84, 0);
+  --ease-circ: cubic-bezier(0.55, 0, 0.1, 1);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   RESET & BASE
+──────────────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 100%; height: 100%; overflow: hidden; background: var(--space-void); color: var(--text-primary); font-family: var(--font-display); }
+::selection { background: rgba(0, 212, 232, 0.25); color: var(--cyan-vivid); }
+
+/* ─────────────────────────────────────────────────────────────
+   STARFIELD CANVAS
+──────────────────────────────────────────────────────────────── */
+#starfield {
+  position: fixed; inset: 0; z-index: 0;
+  pointer-events: none;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   NEBULA BACKGROUND
+──────────────────────────────────────────────────────────────── */
+.nebula-bg {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 80% 50% at 15% 30%, rgba(0, 60, 90, 0.35) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 85% 70%, rgba(0, 40, 70, 0.25) 0%, transparent 65%),
+    radial-gradient(ellipse 40% 60% at 50% 10%, rgba(10, 20, 50, 0.40) 0%, transparent 60%),
+    linear-gradient(180deg, var(--space-void) 0%, var(--space-deep) 50%, var(--space-void) 100%);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   SLIDE DECK
+──────────────────────────────────────────────────────────────── */
+#deck {
+  position: relative; z-index: 1;
+  width: 100vw; height: 100vh;
+  overflow: hidden;
+}
+
+.slide {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
+  padding: var(--s7) var(--s8);
+  opacity: 0; pointer-events: none;
+  transform: translateY(30px);
+  transition: opacity 0.65s var(--ease-out), transform 0.65s var(--ease-out);
+  will-change: opacity, transform;
+}
+.slide.active {
+  opacity: 1; pointer-events: all;
+  transform: translateY(0);
+}
+.slide.exit-up {
+  opacity: 0; pointer-events: none;
+  transform: translateY(-30px);
+  transition: opacity 0.45s var(--ease-in), transform 0.45s var(--ease-in);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   NAVIGATION
+──────────────────────────────────────────────────────────────── */
+#nav-dots {
+  position: fixed; bottom: var(--s4); left: 50%; z-index: 100;
+  transform: translateX(-50%);
+  display: flex; gap: var(--s2); align-items: center;
+}
+.nav-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--text-muted);
+  cursor: pointer; transition: all 0.3s var(--ease-out);
+}
+.nav-dot.active {
+  width: 24px; border-radius: 3px;
+  background: var(--cyan-vivid);
+  box-shadow: 0 0 10px var(--cyan-vivid);
+}
+
+#nav-arrows {
+  position: fixed; bottom: var(--s4); right: var(--s5); z-index: 100;
+  display: flex; gap: var(--s2);
+}
+.nav-btn {
+  width: 44px; height: 44px; border-radius: 50%;
+  border: 1px solid var(--glass-border);
+  background: var(--glass-bg);
+  color: var(--text-secondary); font-size: var(--text-lg);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  backdrop-filter: blur(12px);
+  transition: all 0.2s var(--ease-out);
+}
+.nav-btn:hover {
+  border-color: var(--cyan-border);
+  color: var(--cyan-vivid);
+  box-shadow: 0 0 16px rgba(0,212,232,0.2);
+}
+
+/* Progress bar */
+#progress-bar {
+  position: fixed; top: 0; left: 0; z-index: 100;
+  height: 2px;
+  background: linear-gradient(90deg, var(--cyan-dim), var(--cyan-vivid));
+  box-shadow: 0 0 8px var(--cyan-vivid);
+  transition: width 0.5s var(--ease-out);
+}
+
+/* Slide counter */
+#slide-counter {
+  position: fixed; top: var(--s3); right: var(--s4); z-index: 100;
+  font-family: var(--font-mono); font-size: var(--text-xs);
+  color: var(--text-muted); letter-spacing: 0.12em;
+}
+#slide-counter span { color: var(--cyan-vivid); }
+
+/* Footer badge */
+#footer-badge {
+  position: fixed; bottom: var(--s4); left: var(--s4); z-index: 100;
+  font-family: var(--font-mono); font-size: 0.65rem;
+  color: var(--text-muted); letter-spacing: 0.08em;
+  opacity: 0.6;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   PRESENTER HINT
+──────────────────────────────────────────────────────────────── */
+#hint {
+  position: fixed; bottom: var(--s8); right: var(--s4); z-index: 100;
+  background: var(--glass-bg); border: 1px solid var(--glass-border);
+  backdrop-filter: blur(16px);
+  border-radius: 10px; padding: var(--s2) var(--s3);
+  font-family: var(--font-mono); font-size: var(--text-xs);
+  color: var(--text-secondary); letter-spacing: 0.06em;
+  display: flex; align-items: center; gap: var(--s2);
+  transition: opacity 0.3s; cursor: pointer;
+}
+#hint .kbd {
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 4px; padding: 2px 6px;
+  font-size: 0.65rem; color: var(--cyan-vivid);
+}
+#hint.dismissed { opacity: 0; pointer-events: none; }
+#hint-close {
+  margin-left: var(--s1); opacity: 0.5; font-size: var(--text-xs);
+  cursor: pointer; color: var(--text-muted);
+}
+#hint-close:hover { opacity: 1; color: var(--text-secondary); }
+
+/* ─────────────────────────────────────────────────────────────
+   GLASS PANEL
+──────────────────────────────────────────────────────────────── */
+.glass {
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  backdrop-filter: blur(20px) saturate(1.4);
+  border-radius: 20px;
+}
+.glass-cyan {
+  background: rgba(0, 60, 80, 0.30);
+  border: 1px solid var(--cyan-border);
+  backdrop-filter: blur(20px) saturate(1.4);
+  border-radius: 20px;
+  box-shadow: 0 0 40px rgba(0,212,232,0.06), inset 0 1px 0 rgba(0,212,232,0.12);
+}
+.glass-amber {
+  background: rgba(60, 30, 0, 0.30);
+  border: 1px solid var(--amber-border);
+  backdrop-filter: blur(20px) saturate(1.4);
+  border-radius: 16px;
+  box-shadow: 0 0 40px rgba(245,158,11,0.07), inset 0 1px 0 rgba(245,158,11,0.12);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   TYPOGRAPHY HELPERS
+──────────────────────────────────────────────────────────────── */
+.label {
+  font-family: var(--font-mono); font-size: var(--text-xs);
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--cyan-vivid); font-weight: 400;
+}
+.label-amber { color: var(--amber-vivid); }
+.label-loomi { color: var(--loomi-vivid); }
+.label-write { color: var(--write-vivid); }
+
+.headline {
+  font-size: var(--text-5xl); font-weight: 700;
+  line-height: 1.06; letter-spacing: -0.03em;
+  color: var(--text-primary);
+}
+.subhead {
+  font-size: var(--text-2xl); font-weight: 300;
+  line-height: 1.4; color: var(--text-secondary);
+}
+.body-lg {
+  font-size: var(--text-lg); font-weight: 300;
+  line-height: 1.7; color: var(--text-secondary);
+}
+.body-md {
+  font-size: var(--text-md); font-weight: 300;
+  line-height: 1.65; color: var(--text-secondary);
+}
+
+/* Gradient text */
+.grad-cyan {
+  background: linear-gradient(135deg, var(--cyan-vivid) 0%, #7ff9ff 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.grad-amber {
+  background: linear-gradient(135deg, var(--amber-vivid) 0%, #fcd34d 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   SLIDE 1: TITLE + ORBITAL HERO
+──────────────────────────────────────────────────────────────── */
+#slide-1 { flex-direction: row; gap: 0; padding: 0; justify-content: flex-start; }
+
+.s1-left {
+  width: 54%; flex: none; height: 100%; display: flex; flex-direction: column;
+  justify-content: center; padding: var(--s8) var(--s7);
+  gap: var(--s4);
+  position: relative; z-index: 2;
+}
+.s1-orbit-container {
+  position: absolute; inset: 0; z-index: 0;
+  overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.orbit-tagline {
+  font-family: var(--font-mono); font-size: var(--text-sm);
+  color: var(--cyan-vivid); letter-spacing: 0.2em; text-transform: uppercase;
+  opacity: 0.8;
+}
+.orbit-title {
+  font-size: 5.5rem; font-weight: 800;
+  line-height: 1.0; letter-spacing: -0.04em;
+  color: var(--text-primary);
+}
+.orbit-title .the-o {
+  display: inline-block;
+  background: linear-gradient(135deg, var(--cyan-vivid), #7ff9ff);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.orbit-subtitle {
+  font-size: var(--text-xl); font-weight: 300;
+  color: var(--text-secondary); line-height: 1.45;
+  max-width: 520px;
+}
+.orbit-meta {
+  display: flex; gap: var(--s3); flex-wrap: wrap; margin-top: var(--s2);
+}
+.orbit-tag {
+  font-family: var(--font-mono); font-size: var(--text-xs);
+  letter-spacing: 0.1em; color: var(--text-muted);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 20px; padding: 6px 14px;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   ORBITAL SYSTEM (canvas or SVG-based)
+──────────────────────────────────────────────────────────────── */
+#orbital-canvas { position: absolute; inset: 0; }
+
+/* ─────────────────────────────────────────────────────────────
+   6-STEP LOOP RING (persistent signature)
+──────────────────────────────────────────────────────────────── */
+#loop-ring {
+  position: fixed; bottom: -40px; right: -40px; z-index: 2;
+  width: 200px; height: 200px;
+  pointer-events: none; opacity: 0.35;
+  transition: opacity 0.6s;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   SLIDE 2: PROBLEM
+──────────────────────────────────────────────────────────────── */
+.s2-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: var(--s5);
+  max-width: 1300px; width: 100%; align-items: start;
+}
+.s2-problem { grid-column: 1 / -1; text-align: center; margin-bottom: var(--s3); }
+
+.pain-card {
+  padding: var(--s4) var(--s5);
+}
+.pain-card .pain-icon {
+  font-size: 2.5rem; margin-bottom: var(--s2); display: block;
+}
+.pain-card .pain-head {
+  font-size: var(--text-xl); font-weight: 600;
+  color: var(--text-primary); margin-bottom: var(--s2);
+}
+.pain-card .pain-body {
+  font-size: var(--text-md); font-weight: 300;
+  color: var(--text-secondary); line-height: 1.65;
+}
+
+.thesis-card {
+  grid-column: 1 / -1;
+  padding: var(--s5) var(--s6); text-align: center;
+  position: relative; overflow: hidden;
+}
+.thesis-card::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(0,212,232,0.04), rgba(0,212,232,0.01));
+  border-radius: inherit;
+}
+.thesis-text {
+  font-size: 2.2rem; font-weight: 600; line-height: 1.35;
+  letter-spacing: -0.02em;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   SLIDE 3: ARCHITECTURE
+──────────────────────────────────────────────────────────────── */
+#arch-canvas-wrap {
+  width: 100%; max-width: 1380px;
+  height: 580px; position: relative;
+}
+#arch-svg {
+  width: 100%; height: 100%;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   SLIDE 4/6/7/8: VIDEO SLOT SLIDES
+──────────────────────────────────────────────────────────────── */
+.video-slide-layout {
+  display: grid; grid-template-columns: 3fr 7fr; gap: var(--s6);
+  max-width: 1740px; width: 100%; align-items: center;
+}
+.video-slide-layout.right-heavy {
+  grid-template-columns: 3fr 7fr;
+}
+
+.video-frame {
+  position: relative; aspect-ratio: 16/9;
+  border-radius: 16px; overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.10);
+  background: #040810;
+  box-shadow:
+    0 0 0 1px rgba(0,212,232,0.10),
+    0 30px 80px rgba(0,0,0,0.6),
+    0 0 60px rgba(0,212,232,0.07);
+}
+.video-frame video { width: 100%; height: 100%; object-fit: cover; }
+.video-frame .play-overlay {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: var(--s3);
+  background: rgba(3,5,9,0.75);
+  backdrop-filter: blur(4px);
+  transition: opacity 0.4s ease;
+}
+.video-frame .play-overlay.playing { opacity: 0; pointer-events: none; }
+.play-icon {
+  width: 72px; height: 72px; border-radius: 50%;
+  border: 2px solid var(--cyan-vivid);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 0 30px rgba(0,212,232,0.3);
+}
+.play-icon::after {
+  content: '';
+  border-left: 24px solid var(--cyan-vivid);
+  border-top: 14px solid transparent;
+  border-bottom: 14px solid transparent;
+  margin-left: 5px;
+}
+.video-caption {
+  font-family: var(--font-mono); font-size: var(--text-xs);
+  color: var(--text-secondary); letter-spacing: 0.08em;
+  text-align: center;
+}
+.video-slot-label {
+  position: absolute; top: var(--s2); left: var(--s2);
+  background: rgba(0,0,0,0.7); border: 1px solid var(--cyan-border);
+  backdrop-filter: blur(8px);
+  border-radius: 6px; padding: 4px 10px;
+  font-family: var(--font-mono); font-size: 0.65rem;
+  color: var(--cyan-vivid); letter-spacing: 0.1em;
+}
+
+.video-content { display: flex; flex-direction: column; gap: var(--s4); }
+.video-content .label { margin-bottom: 0; }
+
+/* ─────────────────────────────────────────────────────────────
+   STAT COUNTERS
+──────────────────────────────────────────────────────────────── */
+.stats-row {
+  display: flex; gap: var(--s4); flex-wrap: wrap;
+}
+.stat-chip {
+  padding: var(--s2) var(--s3);
+  border-radius: 12px;
+  background: rgba(0,212,232,0.05);
+  border: 1px solid var(--cyan-border);
+}
+.stat-chip .stat-value {
+  font-size: var(--text-2xl); font-weight: 700;
+  color: var(--cyan-vivid); letter-spacing: -0.02em;
+  line-height: 1;
+}
+.stat-chip .stat-label {
+  font-family: var(--font-mono); font-size: var(--text-xs);
+  color: var(--text-muted); letter-spacing: 0.1em;
+  margin-top: 4px;
+}
+
+/* Big stat display (slide 4) */
+.big-stats {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s3);
+  max-width: 960px; width: 100%;
+}
+.big-stat {
+  padding: var(--s4) var(--s4);
+  text-align: center;
+  border-radius: 16px;
+  background: rgba(0,212,232,0.04);
+  border: 1px solid rgba(0,212,232,0.12);
+}
+.big-stat .bsv {
+  font-size: 3.2rem; font-weight: 800; letter-spacing: -0.04em;
+  line-height: 1; margin-bottom: 8px;
+  background: linear-gradient(135deg, var(--cyan-vivid), #7ff9ff);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+.big-stat .bsl {
+  font-size: var(--text-sm); font-weight: 300;
+  color: var(--text-secondary); line-height: 1.4;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   GATE DISPLAY
+──────────────────────────────────────────────────────────────── */
+.gate-card {
+  padding: var(--s4) var(--s5);
+  position: relative; overflow: hidden;
+}
+.gate-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 3px;
+  background: linear-gradient(90deg, transparent, var(--amber-vivid), transparent);
+}
+.gate-header {
+  display: flex; align-items: center; gap: var(--s2); margin-bottom: var(--s2);
+}
+.gate-icon {
+  font-size: 1.5rem; filter: drop-shadow(0 0 8px var(--amber-vivid));
+}
+.gate-title {
+  font-size: var(--text-xl); font-weight: 600; color: var(--amber-vivid);
+  letter-spacing: -0.01em;
+}
+.gate-body {
+  font-size: var(--text-sm); font-weight: 300;
+  color: var(--text-secondary); line-height: 1.65;
+}
+.gate-pulse {
+  display: inline-block; width: 10px; height: 10px;
+  border-radius: 50%; background: var(--amber-vivid);
+  box-shadow: 0 0 0 0 rgba(245,158,11,0.6);
+  animation: gate-pulse 2s infinite;
+  margin-right: 8px; vertical-align: middle;
+}
+@keyframes gate-pulse {
+  0%   { box-shadow: 0 0 0 0 rgba(245,158,11,0.6); }
+  70%  { box-shadow: 0 0 0 12px rgba(245,158,11,0); }
+  100% { box-shadow: 0 0 0 0 rgba(245,158,11,0); }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   TOOL BADGES
+──────────────────────────────────────────────────────────────── */
+.tool-list {
+  display: flex; flex-direction: column; gap: var(--s1);
+}
+.tool-badge {
+  display: flex; align-items: center; gap: var(--s2);
+  padding: var(--s1) var(--s2); border-radius: 8px;
+  background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.05);
+  font-family: var(--font-mono); font-size: 0.78rem;
+  color: var(--text-secondary); letter-spacing: 0.04em;
+  transition: all 0.2s;
+}
+.tool-badge:hover { background: rgba(34,211,165,0.05); border-color: rgba(34,211,165,0.2); }
+.tool-badge .dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  flex-shrink: 0;
+}
+.dot-loomi { background: var(--loomi-vivid); box-shadow: 0 0 6px var(--loomi-vivid); }
+.dot-write { background: var(--write-vivid); box-shadow: 0 0 6px var(--write-vivid); }
+.dot-cyan  { background: var(--cyan-vivid);  box-shadow: 0 0 6px var(--cyan-vivid);  }
+
+/* ─────────────────────────────────────────────────────────────
+   SLIDE 5: GATE 1
+──────────────────────────────────────────────────────────────── */
+.gate1-layout {
+  max-width: 1740px; width: 100%;
+  display: grid; grid-template-columns: 3fr 7fr; gap: var(--s6);
+  align-items: center;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   SLIDE 8: CLOSING
+──────────────────────────────────────────────────────────────── */
+.closing-layout {
+  max-width: 1100px; width: 100%;
+  display: flex; flex-direction: column; align-items: center;
+  gap: var(--s5); text-align: center;
+}
+.verb-trio {
+  display: flex; gap: var(--s4); align-items: center;
+}
+.verb-item {
+  display: flex; flex-direction: column; align-items: center; gap: var(--s2);
+}
+.verb-word {
+  font-size: var(--text-4xl); font-weight: 800;
+  letter-spacing: -0.04em; line-height: 1;
+}
+.verb-desc {
+  font-family: var(--font-mono); font-size: var(--text-xs);
+  color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase;
+}
+.verb-div {
+  font-size: 2rem; color: var(--text-muted); opacity: 0.3;
+  align-self: flex-end; padding-bottom: 8px;
+}
+
+.closing-quote {
+  font-size: var(--text-xl); font-weight: 300;
+  color: var(--text-secondary); line-height: 1.65;
+  max-width: 820px; font-style: italic;
+}
+.responsible-line {
+  font-family: var(--font-mono); font-size: var(--text-xs);
+  color: var(--text-muted); letter-spacing: 0.08em;
+  border: 1px solid rgba(255,255,255,0.07); border-radius: 8px;
+  padding: var(--s2) var(--s3);
+  max-width: 700px;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   ARCH SVG STYLES
+──────────────────────────────────────────────────────────────── */
+.arch-node {
+  cursor: default;
+  transition: filter 0.3s;
+}
+.arch-node:hover { filter: brightness(1.2); }
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.7; }
+  50%       { opacity: 1; }
+}
+@keyframes data-travel {
+  0%   { stroke-dashoffset: 200; opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 0; }
+}
+@keyframes gate-glow {
+  0%, 100% { filter: drop-shadow(0 0 6px rgba(245,158,11,0.5)); }
+  50%       { filter: drop-shadow(0 0 18px rgba(245,158,11,0.9)); }
+}
+
+.data-pulse {
+  stroke-dasharray: 12 188;
+  stroke-dashoffset: 200;
+  animation: data-travel 3s ease-in-out infinite;
+}
+.data-pulse-1 { animation-delay: 0s; }
+.data-pulse-2 { animation-delay: 0.6s; }
+.data-pulse-3 { animation-delay: 1.2s; }
+.data-pulse-4 { animation-delay: 1.8s; }
+.data-pulse-5 { animation-delay: 2.4s; }
+
+.gate-amber-glow { animation: gate-glow 2.5s ease-in-out infinite; }
+.node-breathe { animation: pulse-glow 3s ease-in-out infinite; }
+
+/* ─────────────────────────────────────────────────────────────
+   SLIDE-IN SEQUENCE (stagger on active)
+──────────────────────────────────────────────────────────────── */
+.slide.active .stagger {
+  animation: stagger-in 0.6s var(--ease-out) both;
+}
+.stagger:nth-child(1) { animation-delay: 0.05s; }
+.stagger:nth-child(2) { animation-delay: 0.15s; }
+.stagger:nth-child(3) { animation-delay: 0.25s; }
+.stagger:nth-child(4) { animation-delay: 0.35s; }
+.stagger:nth-child(5) { animation-delay: 0.45s; }
+.stagger:nth-child(6) { animation-delay: 0.55s; }
+
+@keyframes stagger-in {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   SMALL LOOP RING SVG
+──────────────────────────────────────────────────────────────── */
+@keyframes ring-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+.ring-outer { transform-origin: 100px 100px; animation: ring-spin 30s linear infinite; }
+
+/* ─────────────────────────────────────────────────────────────
+   PREFERS REDUCED MOTION
+──────────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.2s !important; }
+  #starfield { display: none; }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   SLIDE 2 — DISCOVER DETAIL
+──────────────────────────────────────────────────────────────── */
+.discover-layout {
+  display: grid; grid-template-columns: 3fr 7fr; gap: var(--s6);
+  max-width: 1740px; width: 100%; align-items: center;
+}
+.discover-right { display: flex; flex-direction: column; gap: var(--s3); }
+.discover-left { display: flex; flex-direction: column; gap: var(--s4); }
+
+.market-breakdown {
+  display: flex; flex-direction: column; gap: var(--s2);
+}
+.market-row {
+  display: flex; align-items: center; gap: var(--s3);
+}
+.market-flag {
+  font-family: var(--font-mono); font-size: var(--text-xs);
+  color: var(--text-muted); letter-spacing: 0.1em; width: 30px; text-align: right;
+}
+.market-bar-wrap {
+  flex: 1; height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden;
+}
+.market-bar {
+  height: 100%; border-radius: 3px;
+  background: linear-gradient(90deg, var(--loomi-vivid), var(--cyan-vivid));
+  animation: bar-fill 1.2s var(--ease-out) both;
+}
+@keyframes bar-fill {
+  from { width: 0% !important; }
+}
+.market-val {
+  font-family: var(--font-mono); font-size: var(--text-xs);
+  color: var(--text-secondary); width: 50px;
+}
+
+.s4-wrap {
+  display: flex; flex-direction: column; gap: var(--s4);
+  max-width: 1380px; width: 100%;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   MISC HELPERS
+──────────────────────────────────────────────────────────────── */
+.row { display: flex; align-items: center; gap: var(--s2); }
+.col { display: flex; flex-direction: column; gap: var(--s2); }
+.mt-sm { margin-top: var(--s2); }
+.mt-md { margin-top: var(--s3); }
+.tag-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--font-mono); font-size: var(--text-xs);
+  letter-spacing: 0.08em; border-radius: 20px;
+  padding: 5px 12px; white-space: nowrap;
+}
+.pill-cyan { background: rgba(0,212,232,0.08); border: 1px solid var(--cyan-border); color: var(--cyan-vivid); }
+.pill-amber { background: rgba(245,158,11,0.08); border: 1px solid var(--amber-border); color: var(--amber-vivid); }
+.pill-loomi { background: rgba(34,211,165,0.08); border: 1px solid rgba(34,211,165,0.25); color: var(--loomi-vivid); }
+.pill-write { background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.25); color: var(--write-vivid); }
+
+hr.glow-line {
+  border: none; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyan-border), transparent);
+  margin: var(--s3) 0;
+}
+
+/* Slide 3 specific width */
+#slide-3 { padding: var(--s6) var(--s5); }
+
+/* Step list */
+.step-list { display: flex; flex-direction: column; gap: var(--s2); }
+.step-item {
+  display: flex; align-items: flex-start; gap: var(--s2);
+  font-size: var(--text-sm); font-weight: 300; color: var(--text-secondary);
+  line-height: 1.55;
+}
+.step-num {
+  flex-shrink: 0; width: 22px; height: 22px; border-radius: 50%;
+  background: rgba(0,212,232,0.1); border: 1px solid var(--cyan-border);
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-size: 0.65rem; color: var(--cyan-vivid);
+  margin-top: 1px;
+}
+.step-num.amber {
+  background: rgba(245,158,11,0.1); border-color: var(--amber-border); color: var(--amber-vivid);
+}
+
+/* ─────────────────────────────────────────────────────────────
+   VIDEO LIGHTBOX — click a video to zoom to widescreen
+──────────────────────────────────────────────────────────────── */
+.video-frame { cursor: zoom-in; transition: transform 0.35s var(--ease-out), box-shadow 0.35s var(--ease-out); }
+.video-frame:hover { transform: translateY(-3px); }
+.video-frame .expand-badge {
+  position: absolute; top: 12px; right: 12px; z-index: 4;
+  display: flex; align-items: center; gap: 6px;
+  font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.08em;
+  color: rgba(240,244,248,0.75);
+  background: rgba(4,8,16,0.55); border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 7px; padding: 5px 9px;
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  opacity: 0; transform: translateY(-4px);
+  transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out);
+  pointer-events: none;
+}
+.video-frame:hover .expand-badge { opacity: 1; transform: translateY(0); }
+
+#video-lightbox {
+  position: fixed; inset: 0; z-index: 1000;
+  display: flex; align-items: center; justify-content: center;
+  visibility: hidden; pointer-events: none;
+}
+#video-lightbox.show { visibility: visible; pointer-events: auto; }
+.vl-backdrop {
+  position: absolute; inset: 0;
+  background: rgba(2,4,10,0.86);
+  -webkit-backdrop-filter: blur(16px); backdrop-filter: blur(16px);
+  opacity: 0; transition: opacity 0.5s var(--ease-out);
+}
+#video-lightbox.show .vl-backdrop { opacity: 1; }
+#video-lightbox.closing .vl-backdrop { opacity: 0; }
+.vl-stage {
+  position: relative; z-index: 2;
+  width: min(92vw, calc(92vh * 16 / 9));
+  aspect-ratio: 16 / 9;
+  border-radius: 18px; overflow: hidden; background: #040810;
+  border: 1px solid rgba(0,212,232,0.18);
+  box-shadow: 0 0 0 1px rgba(0,212,232,0.12), 0 40px 120px rgba(0,0,0,0.7), 0 0 90px rgba(0,212,232,0.10);
+  transform: translate(0,0) scale(1);
+  transition: transform 0.5s cubic-bezier(0.16,1,0.3,1);
+  cursor: zoom-out;
+}
+.vl-video { width: 100%; height: 100%; object-fit: contain; background: #040810; display: block; }
+.vl-empty {
+  position: absolute; inset: 0; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 10px; pointer-events: none;
+  font-family: var(--font-mono); font-size: 0.8rem; letter-spacing: 0.06em;
+  color: rgba(139,164,188,0.6); text-align: center; padding: 0 24px;
+}
+.vl-close {
+  position: absolute; top: 24px; right: 28px; z-index: 3;
+  width: 46px; height: 46px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(8,14,24,0.7); border: 1px solid rgba(255,255,255,0.16);
+  color: #e6edf5; font-size: 1.15rem; cursor: pointer;
+  opacity: 0; transition: opacity 0.4s var(--ease-out);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+}
+#video-lightbox.show:not(.closing) .vl-close { opacity: 1; }
+.vl-close:hover { border-color: var(--cyan-vivid); color: var(--cyan-vivid); }
+@media (prefers-reduced-motion: reduce) {
+  .vl-stage, .vl-backdrop, .video-frame, .expand-badge { transition: none; }
+}
+
+/* ─────────────────────────────────────────────────────────────
+   LIGHTBOX VIDEO CONTROLS — timeline scrub + speed
+──────────────────────────────────────────────────────────────── */
+.vl-controls {
+  position: absolute; left: 0; right: 0; bottom: 0; z-index: 4;
+  display: flex; flex-direction: column; gap: 10px;
+  padding: 30px 22px 16px;
+  background: linear-gradient(to top, rgba(2,4,10,0.92) 0%, rgba(2,4,10,0.55) 55%, transparent 100%);
+  opacity: 0; transform: translateY(8px); pointer-events: none;
+  transition: opacity 0.3s var(--ease-out), transform 0.3s var(--ease-out);
+  cursor: default;
+}
+#video-lightbox.show .vl-stage:hover .vl-controls,
+#video-lightbox.show .vl-controls:focus-within {
+  opacity: 1; transform: translateY(0); pointer-events: auto;
+}
+
+.vl-seek {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; height: 5px; border-radius: 3px;
+  background: rgba(255,255,255,0.18);
+  cursor: pointer; outline: none;
+}
+.vl-seek::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 14px; height: 14px; border-radius: 50%;
+  background: var(--cyan-vivid); box-shadow: 0 0 10px rgba(0,212,232,0.7);
+  cursor: pointer;
+}
+.vl-seek::-moz-range-thumb {
+  width: 14px; height: 14px; border: none; border-radius: 50%;
+  background: var(--cyan-vivid); box-shadow: 0 0 10px rgba(0,212,232,0.7);
+  cursor: pointer;
+}
+
+.vl-ctl-row { display: flex; align-items: center; gap: 14px; }
+.vl-btn {
+  background: none; border: none; color: #e6edf5;
+  cursor: pointer; font-size: 0.95rem; line-height: 1;
+  width: 32px; height: 32px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: 8px; transition: background 0.2s, color 0.2s;
+}
+.vl-btn:hover { background: rgba(255,255,255,0.1); color: var(--cyan-vivid); }
+.vl-time {
+  font-family: var(--font-mono); font-size: 0.72rem;
+  color: var(--text-secondary); letter-spacing: 0.04em; white-space: nowrap;
+}
+.vl-time .vl-cur { color: var(--text-primary); }
+.vl-spacer { flex: 1; }
+.vl-speeds { display: flex; gap: 4px; }
+.vl-speed {
+  font-family: var(--font-mono); font-size: 0.68rem;
+  background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.10);
+  color: var(--text-secondary); border-radius: 6px; padding: 4px 8px;
+  cursor: pointer; transition: all 0.2s;
+}
+.vl-speed:hover { border-color: var(--cyan-border); color: var(--cyan-vivid); }
+.vl-speed.active {
+  background: rgba(0,212,232,0.12); border-color: var(--cyan-border);
+  color: var(--cyan-vivid); box-shadow: 0 0 8px rgba(0,212,232,0.2);
+}
+
+/* ── VOICEOVER speaker toggle ───────────────────────────── */
+#vo-toggle {
+  position: fixed; top: var(--s3); left: var(--s4); z-index: 100;
+  width: 40px; height: 40px; border-radius: 50%; padding: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(8,12,22,0.7); border: 1px solid rgba(255,255,255,0.12);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  color: var(--cyan-vivid); cursor: pointer;
+  transition: border-color 0.2s, box-shadow 0.2s, color 0.2s, opacity 0.3s;
+}
+#vo-toggle:hover { border-color: var(--cyan-border); box-shadow: 0 0 14px rgba(0,212,232,0.28); }
+#vo-toggle .vo-wave { transition: opacity 0.25s; }
+#vo-toggle.muted { color: var(--text-muted); }
+#vo-toggle.muted .vo-wave { opacity: 0.12; }
+#vo-toggle.playing { color: var(--cyan-vivid); border-color: var(--cyan-border); box-shadow: 0 0 16px rgba(0,212,232,0.3); }
+#vo-toggle.playing .vo-wave1 { animation: vo-pulse 1.2s ease-in-out infinite; }
+#vo-toggle.playing .vo-wave2 { animation: vo-pulse 1.2s ease-in-out 0.25s infinite; }
+#vo-toggle.no-audio { opacity: 0.2; pointer-events: none; }
+@keyframes vo-pulse { 0%,100% { opacity: 0.3; } 50% { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { #vo-toggle.playing .vo-wave { animation: none; opacity: 0.9; } }
+</style>
+</head>
+<body>
+
+<!-- NEBULA BACKGROUND -->
+<div class="nebula-bg"></div>
+
+<!-- STARFIELD -->
+<canvas id="starfield"></canvas>
+
+<!-- PROGRESS BAR -->
+<div id="progress-bar" style="width: 12.5%"></div>
+
+<!-- SLIDE COUNTER -->
+<div id="slide-counter"><span id="cur-slide">01</span> / 08</div>
+
+<!-- VOICEOVER (per-slide narration) -->
+<audio id="vo" preload="auto"></audio>
+<button id="vo-toggle" class="muted" aria-label="Toggle narration" title="Narration — click to play / pause">
+  <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polygon points="3 9 8 9 13 4 13 20 8 15 3 15" fill="currentColor" stroke="none"></polygon>
+    <path class="vo-wave vo-wave1" d="M16 8.5a5 5 0 0 1 0 7"></path>
+    <path class="vo-wave vo-wave2" d="M18.8 5.5a9 9 0 0 1 0 13"></path>
+  </svg>
+</button>
+
+<!-- FOOTER BADGE -->
+<div id="footer-badge">Loomi Connect AI Hackathon · Track 6 — Cross-MCP Orchestration · Team Rohlik</div>
+
+<!-- NAV DOTS -->
+<div id="nav-dots">
+  <div class="nav-dot active" data-slide="0"></div>
+  <div class="nav-dot" data-slide="1"></div>
+  <div class="nav-dot" data-slide="2"></div>
+  <div class="nav-dot" data-slide="3"></div>
+  <div class="nav-dot" data-slide="4"></div>
+  <div class="nav-dot" data-slide="5"></div>
+  <div class="nav-dot" data-slide="6"></div>
+  <div class="nav-dot" data-slide="7"></div>
+</div>
+
+<!-- NAV ARROWS -->
+<div id="nav-arrows">
+  <button class="nav-btn" id="btn-prev">&#8592;</button>
+  <button class="nav-btn" id="btn-next">&#8594;</button>
+</div>
+
+<!-- PRESENTER HINT -->
+<div id="hint">
+  <span class="kbd">←</span><span class="kbd">→</span> to navigate
+  <span style="margin: 0 4px; color: var(--text-muted);">·</span>
+  <span class="kbd">Space</span> to advance
+  <span id="hint-close" title="Dismiss">✕</span>
+</div>
+
+<!-- PERSISTENT MINI LOOP RING -->
+<svg id="loop-ring" viewBox="0 0 200 200">
+  <g class="ring-outer">
+    <circle cx="100" cy="100" r="80" fill="none" stroke="rgba(0,212,232,0.15)" stroke-width="1"/>
+    <circle cx="100" cy="20" r="5" fill="var(--cyan-vivid)" opacity="0.6"/>
+    <circle cx="168" cy="54" r="5" fill="var(--loomi-vivid)" opacity="0.6"/>
+    <circle cx="168" cy="146" r="5" fill="var(--amber-vivid)" opacity="0.6"/>
+    <circle cx="100" cy="180" r="5" fill="var(--write-vivid)" opacity="0.6"/>
+    <circle cx="32" cy="146" r="5" fill="var(--purple-vivid)" opacity="0.6"/>
+    <circle cx="32" cy="54" r="5" fill="var(--amber-vivid)" opacity="0.6"/>
+  </g>
+</svg>
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!--  SLIDE DECK                                                 -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<div id="deck">
+
+  <!-- ─────────────────────────── SLIDE 1: TITLE ──────────────────────────── -->
+  <div class="slide active" id="slide-1">
+    <div class="s1-left">
+      <div class="orbit-tagline stagger">Loomi Connect AI Hackathon</div>
+      <h1 class="orbit-title stagger">
+        <span class="the-o">O</span>rbit
+      </h1>
+      <p class="orbit-subtitle stagger">
+        Your marketing team's<br>next AI teammate.
+      </p>
+      <p class="body-lg stagger" style="max-width: 480px; margin-top: var(--s1);">
+        A closed-loop campaign agent that reads customer data,
+        operates your existing Bloomreach setup, and creates
+        entire campaigns from scratch — with a human at every
+        customer-facing step.
+      </p>
+      <div class="orbit-meta stagger">
+        <span class="orbit-tag">Track 6 — Cross-MCP Orchestration</span>
+        <span class="orbit-tag">Team Rohlik</span>
+        <span class="orbit-tag">Hermes · FastMCP · Bloomreach</span>
+      </div>
+    </div>
+    <div class="s1-orbit-container">
+      <canvas id="orbital-canvas"></canvas>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────── SLIDE 2: PROBLEM ──────────────────────────── -->
+  <div class="slide" id="slide-2">
+    <div class="s2-grid">
+      <div class="s2-problem stagger">
+        <div class="label" style="margin-bottom: var(--s2)">The challenge</div>
+        <h2 style="font-size: var(--text-3xl); font-weight: 700; letter-spacing: -0.03em; line-height: 1.2;">
+          Lean teams, rich data,<br><span class="grad-cyan">not enough hours.</span>
+        </h2>
+      </div>
+
+      <div class="glass pain-card stagger">
+        <span class="pain-icon">📊</span>
+        <div class="pain-head">Discovery is manual</div>
+        <div class="pain-body">Finding a real revenue opportunity in Bloomreach takes hours of EQL, funnel analysis, consent checks, and scenario auditing — before any campaign brief is even drafted.</div>
+      </div>
+
+      <div class="glass pain-card stagger">
+        <span class="pain-icon">🔁</span>
+        <div class="pain-head">The cycle is fragmented</div>
+        <div class="pain-body">Discover → build → send → measure → iterate. Each step lives in a different tool, owned by a different person. The loop breaks every handoff. Insights expire.</div>
+      </div>
+
+      <div class="glass-cyan thesis-card stagger">
+        <div class="label" style="margin-bottom: var(--s2)">Orbit's thesis</div>
+        <p class="thesis-text">
+          <span class="grad-cyan">thin tools + rich agent knowledge</span>
+          <span style="color: var(--text-secondary); font-weight: 300;"> = </span>
+          <span style="color: var(--text-primary);">leverage.</span>
+        </p>
+        <p class="body-md" style="margin-top: var(--s3); max-width: 700px; margin-left: auto; margin-right: auto;">
+          Orbit reads Bloomreach with Loomi Connect, operates existing infra through a deliberately thin write-MCP, and creates whole campaigns from its own skills — the agent is the intelligence, not the tools.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────── SLIDE 3: ARCHITECTURE ──────────────────────────── -->
+  <div class="slide" id="slide-3">
+    <div style="width: 100%; max-width: 1380px; display: flex; flex-direction: column; gap: var(--s4);">
+      <div style="text-align: center;" class="stagger">
+        <div class="label" style="margin-bottom: var(--s2)">System architecture</div>
+        <h2 style="font-size: var(--text-2xl); font-weight: 600; letter-spacing: -0.02em;">
+          Two MCP surfaces. Two trust levels. One human gate each.
+        </h2>
+      </div>
+      <div id="arch-canvas-wrap" class="stagger">
+        <svg id="arch-svg" viewBox="0 0 1380 560" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <!-- Glow filters -->
+            <filter id="glow-cyan" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="4" result="blur"/>
+              <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+            </filter>
+            <filter id="glow-amber" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="5" result="blur"/>
+              <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+            </filter>
+            <filter id="glow-loomi" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="4" result="blur"/>
+              <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+            </filter>
+            <filter id="glow-write" x="-50%" y="-50%" width="200%" height="200%">
+              <feGaussianBlur stdDeviation="4" result="blur"/>
+              <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+            </filter>
+            <filter id="shadow-deep">
+              <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="rgba(0,0,0,0.6)"/>
+            </filter>
+
+            <!-- Arrow markers -->
+            <marker id="arr-cyan" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+              <path d="M0,0 L6,3 L0,6 Z" fill="#00d4e8" opacity="0.8"/>
+            </marker>
+            <marker id="arr-loomi" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+              <path d="M0,0 L6,3 L0,6 Z" fill="#22d3a5" opacity="0.8"/>
+            </marker>
+            <marker id="arr-amber" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+              <path d="M0,0 L6,3 L0,6 Z" fill="#f59e0b" opacity="0.8"/>
+            </marker>
+            <marker id="arr-write" markerWidth="6" markerHeight="6" refX="5" refY="3" orient="auto">
+              <path d="M0,0 L6,3 L0,6 Z" fill="#f87171" opacity="0.8"/>
+            </marker>
+
+            <!-- Gradients for nodes -->
+            <linearGradient id="grad-human" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#78350f" stop-opacity="0.9"/>
+              <stop offset="100%" stop-color="#92400e" stop-opacity="0.7"/>
+            </linearGradient>
+            <linearGradient id="grad-ui" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#1e3a5f" stop-opacity="0.9"/>
+              <stop offset="100%" stop-color="#1e40af" stop-opacity="0.7"/>
+            </linearGradient>
+            <linearGradient id="grad-agent" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#3b1f6e" stop-opacity="0.9"/>
+              <stop offset="100%" stop-color="#5b21b6" stop-opacity="0.7"/>
+            </linearGradient>
+            <linearGradient id="grad-loomi" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#064e3b" stop-opacity="0.9"/>
+              <stop offset="100%" stop-color="#065f46" stop-opacity="0.7"/>
+            </linearGradient>
+            <linearGradient id="grad-writemcp" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#7f1d1d" stop-opacity="0.9"/>
+              <stop offset="100%" stop-color="#991b1b" stop-opacity="0.7"/>
+            </linearGradient>
+            <linearGradient id="grad-engagement" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#1e293b" stop-opacity="0.9"/>
+              <stop offset="100%" stop-color="#334155" stop-opacity="0.7"/>
+            </linearGradient>
+            <linearGradient id="grad-mail" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#78350f" stop-opacity="0.6"/>
+              <stop offset="100%" stop-color="#a16207" stop-opacity="0.5"/>
+            </linearGradient>
+          </defs>
+
+          <!-- Background grid hint -->
+          <rect width="1380" height="560" fill="rgba(0,0,0,0)" rx="16"/>
+
+          <!-- ── CONNECTIONS ── -->
+          <!-- Human → UI -->
+          <line x1="120" y1="100" x2="260" y2="100" stroke="#fde68a" stroke-width="1.5" stroke-opacity="0.4" marker-end="url(#arr-amber)" stroke-dasharray="4 4"/>
+          <!-- UI ↔ Agent -->
+          <line x1="390" y1="100" x2="530" y2="100" stroke="#bfdbfe" stroke-width="1.5" stroke-opacity="0.5" marker-end="url(#arr-cyan)"/>
+          <!-- Agent → Loomi -->
+          <path d="M620 70 Q620 0 450 -20 Q300 -40 260 70" fill="none" stroke="#22d3a5" stroke-width="1.5" stroke-opacity="0.45" marker-end="url(#arr-loomi)"/>
+          <!-- Agent → Gate1 (down-left) -->
+          <line x1="620" y1="130" x2="620" y2="200" stroke="#f59e0b" stroke-width="2" stroke-opacity="0.7" marker-end="url(#arr-amber)"/>
+          <!-- Gate1 → write-MCP -->
+          <line x1="660" y1="240" x2="820" y2="240" stroke="#f59e0b" stroke-width="2" stroke-opacity="0.7" marker-end="url(#arr-amber)"/>
+          <!-- write-MCP → Engagement -->
+          <line x1="980" y1="240" x2="1100" y2="240" stroke="#f87171" stroke-width="1.5" stroke-opacity="0.5" marker-end="url(#arr-write)"/>
+          <!-- Engagement → Mail -->
+          <line x1="1200" y1="270" x2="1200" y2="370" stroke="#fef9c3" stroke-width="1.5" stroke-opacity="0.4" marker-end="url(#arr-amber)"/>
+          <!-- Engagement → Gate2 -->
+          <line x1="1100" y1="240" x2="820" y2="380" fill="none" stroke="#f59e0b" stroke-width="2" stroke-opacity="0.5" marker-end="url(#arr-amber)"/>
+          <!-- Loomi → Agent (return) -->
+          <path d="M260 130 Q260 170 400 170 Q500 170 530 130" fill="none" stroke="#22d3a5" stroke-width="1" stroke-opacity="0.3" stroke-dasharray="3 5"/>
+
+          <!-- ── DATA PULSES ── -->
+          <!-- Pulse: Agent → Loomi arc -->
+          <path d="M620 70 Q620 0 450 -20 Q300 -40 260 70" fill="none" stroke="#22d3a5" stroke-width="3" opacity="0" class="data-pulse data-pulse-1"/>
+          <!-- Pulse: Agent → Gate1 -->
+          <line x1="620" y1="130" x2="620" y2="200" stroke="#f59e0b" stroke-width="3" opacity="0" class="data-pulse data-pulse-2"/>
+          <!-- Pulse: Gate1 → write-MCP -->
+          <line x1="660" y1="240" x2="820" y2="240" stroke="#f59e0b" stroke-width="3" opacity="0" class="data-pulse data-pulse-3"/>
+          <!-- Pulse: write-MCP → Engagement -->
+          <line x1="980" y1="240" x2="1100" y2="240" stroke="#f87171" stroke-width="3" opacity="0" class="data-pulse data-pulse-4"/>
+          <!-- Pulse: Engagement → Mail -->
+          <line x1="1200" y1="270" x2="1200" y2="370" stroke="#fef9c3" stroke-width="3" opacity="0" class="data-pulse data-pulse-5"/>
+
+          <!-- ══════════════════════════════════════ -->
+          <!-- NODE: HUMAN (👤 Marketer) -->
+          <!-- ══════════════════════════════════════ -->
+          <g class="arch-node" transform="translate(40, 60)">
+            <rect x="0" y="0" width="145" height="80" rx="12" fill="url(#grad-human)" stroke="#fde68a" stroke-width="1.2" stroke-opacity="0.5" filter="url(#shadow-deep)"/>
+            <text x="72" y="22" text-anchor="middle" font-family="'Sora', sans-serif" font-size="9" fill="#fde68a" opacity="0.7" letter-spacing="1.5" font-weight="400">MARKETER</text>
+            <text x="72" y="46" text-anchor="middle" font-size="22" fill="white">👤</text>
+            <text x="72" y="67" text-anchor="middle" font-family="'Sora', sans-serif" font-size="9.5" fill="#fde68a" opacity="0.6" font-weight="300">Goal · Approve</text>
+          </g>
+
+          <!-- NODE: HERMES UI -->
+          <g class="arch-node" transform="translate(250, 60)">
+            <rect x="0" y="0" width="150" height="80" rx="12" fill="url(#grad-ui)" stroke="#bfdbfe" stroke-width="1.2" stroke-opacity="0.5" filter="url(#shadow-deep)"/>
+            <text x="75" y="22" text-anchor="middle" font-family="'Sora', sans-serif" font-size="9" fill="#bfdbfe" opacity="0.7" letter-spacing="1.5" font-weight="400">HERMES WEB UI</text>
+            <text x="75" y="45" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="11" fill="#93c5fd" font-weight="400">:8787</text>
+            <text x="75" y="65" text-anchor="middle" font-family="'Sora', sans-serif" font-size="8.5" fill="#93c5fd" opacity="0.55" font-weight="300">Chat · Kanban · Schedule</text>
+          </g>
+
+          <!-- NODE: AGENT RUNTIME -->
+          <g class="arch-node node-breathe" transform="translate(520, 50)">
+            <rect x="0" y="0" width="200" height="100" rx="14" fill="url(#grad-agent)" stroke="#ddd6fe" stroke-width="1.5" stroke-opacity="0.6" filter="url(#shadow-deep)"/>
+            <text x="100" y="22" text-anchor="middle" font-family="'Sora', sans-serif" font-size="9" fill="#ddd6fe" opacity="0.7" letter-spacing="1.5" font-weight="400">HERMES AGENT RUNTIME</text>
+            <text x="100" y="48" text-anchor="middle" font-family="'Sora', sans-serif" font-size="13" fill="white" font-weight="600" letter-spacing="-0.5">Orbit</text>
+            <text x="100" y="65" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="#c4b5fd" opacity="0.7">understand → decide → act</text>
+            <text x="100" y="84" text-anchor="middle" font-family="'Sora', sans-serif" font-size="8.5" fill="#a78bfa" opacity="0.5">8 skills · 1 docker compose up</text>
+          </g>
+
+          <!-- NODE: LOOMI CONNECT MCP -->
+          <g class="arch-node" transform="translate(200, 340)">
+            <rect x="0" y="0" width="200" height="110" rx="14" fill="url(#grad-loomi)" stroke="#22d3a5" stroke-width="1.5" stroke-opacity="0.65" filter="url(#shadow-deep)"/>
+            <text x="100" y="22" text-anchor="middle" font-family="'Sora', sans-serif" font-size="9" fill="#22d3a5" opacity="0.8" letter-spacing="1.5" font-weight="400">LOOMI CONNECT MCP</text>
+            <text x="100" y="41" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8.5" fill="#6ee7b7" opacity="0.6">REMOTE · READ-ONLY · OAuth2.1</text>
+            <text x="100" y="60" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="#6ee7b7" opacity="0.55">execute_analytics_eql</text>
+            <text x="100" y="73" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="#6ee7b7" opacity="0.55">get_event_schema</text>
+            <text x="100" y="86" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="#6ee7b7" opacity="0.55">get_customer_property_schema</text>
+            <text x="100" y="99" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="#6ee7b7" opacity="0.45">list_scenarios · get_consent_settings</text>
+            <text x="100" y="105" text-anchor="middle" font-family="'Sora', sans-serif" font-size="8" fill="#22d3a5" opacity="0.5">5 of 81 tools</text>
+          </g>
+          <!-- Loomi label: "5 of 81" badge -->
+          <g transform="translate(360, 340)">
+            <rect x="0" y="-12" width="55" height="18" rx="9" fill="rgba(34,211,165,0.15)" stroke="rgba(34,211,165,0.35)" stroke-width="1"/>
+            <text x="27" y="-0.5" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="#22d3a5" font-weight="500">5 / 81 tools</text>
+          </g>
+
+          <!-- Arrow: Agent → Loomi (down) -->
+          <line x1="620" y1="150" x2="300" y2="340" stroke="#22d3a5" stroke-width="1.5" stroke-opacity="0.4" marker-end="url(#arr-loomi)" stroke-dasharray="5 5"/>
+          <!-- Arrow: Loomi → Agent (return read) -->
+          <line x1="400" y1="340" x2="580" y2="150" stroke="#22d3a5" stroke-width="1" stroke-opacity="0.2" stroke-dasharray="2 6"/>
+
+          <!-- NODE: GATE 1 ✋ -->
+          <g class="arch-node gate-amber-glow" transform="translate(550, 200)">
+            <rect x="0" y="0" width="150" height="70" rx="12" fill="rgba(120,53,15,0.5)" stroke="#f59e0b" stroke-width="2" stroke-opacity="0.8" filter="url(#glow-amber)"/>
+            <text x="75" y="20" text-anchor="middle" font-size="16">✋</text>
+            <text x="75" y="38" text-anchor="middle" font-family="'Sora', sans-serif" font-size="11" fill="#f59e0b" font-weight="600" letter-spacing="-0.3">GATE 1</text>
+            <text x="75" y="55" text-anchor="middle" font-family="'Sora', sans-serif" font-size="8.5" fill="#fde68a" opacity="0.7" font-weight="300">Human approves brief</text>
+          </g>
+
+          <!-- NODE: BLOOMREACH-MCP (write) -->
+          <g class="arch-node" transform="translate(820, 200)">
+            <rect x="0" y="0" width="185" height="110" rx="14" fill="url(#grad-writemcp)" stroke="#f87171" stroke-width="1.5" stroke-opacity="0.65" filter="url(#shadow-deep)"/>
+            <text x="92" y="22" text-anchor="middle" font-family="'Sora', sans-serif" font-size="9" fill="#f87171" opacity="0.8" letter-spacing="1.5" font-weight="400">BLOOMREACH-MCP</text>
+            <text x="92" y="38" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8.5" fill="#fca5a5" opacity="0.6">Python / FastMCP · :8000</text>
+            <text x="92" y="58" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="#fca5a5" opacity="0.55">set_customer_property</text>
+            <text x="92" y="71" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="#fca5a5" opacity="0.55">read_customer_attributes</text>
+            <text x="92" y="84" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="#fca5a5" opacity="0.55">trigger_scenario</text>
+            <text x="92" y="97" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="#fca5a5" opacity="0.55">read_customer_events</text>
+          </g>
+          <!-- 4-tools badge -->
+          <g transform="translate(965, 200)">
+            <rect x="0" y="-12" width="48" height="18" rx="9" fill="rgba(248,113,113,0.15)" stroke="rgba(248,113,113,0.35)" stroke-width="1"/>
+            <text x="24" y="-0.5" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8" fill="#f87171" font-weight="500">4 tools</text>
+          </g>
+
+          <!-- NODE: BLOOMREACH ENGAGEMENT -->
+          <g class="arch-node" transform="translate(1060, 200)">
+            <rect x="0" y="0" width="185" height="80" rx="12" fill="url(#grad-engagement)" stroke="#94a3b8" stroke-width="1.2" stroke-opacity="0.5" filter="url(#shadow-deep)"/>
+            <text x="92" y="22" text-anchor="middle" font-family="'Sora', sans-serif" font-size="9" fill="#cbd5e1" opacity="0.7" letter-spacing="1.5" font-weight="400">BLOOMREACH</text>
+            <text x="92" y="38" text-anchor="middle" font-family="'Sora', sans-serif" font-size="9" fill="#cbd5e1" opacity="0.7" letter-spacing="1.5" font-weight="400">ENGAGEMENT</text>
+            <text x="92" y="57" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8.5" fill="#94a3b8" opacity="0.55">CRM · Automation</text>
+            <text x="92" y="71" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8.5" fill="#94a3b8" opacity="0.45">REST track/data v2</text>
+          </g>
+
+          <!-- NODE: MAIL -->
+          <g class="arch-node" transform="translate(1115, 380)">
+            <rect x="0" y="0" width="145" height="70" rx="12" fill="url(#grad-mail)" stroke="#fef9c3" stroke-width="1" stroke-opacity="0.4"/>
+            <text x="72" y="22" text-anchor="middle" font-family="'Sora', sans-serif" font-size="9" fill="#fef9c3" opacity="0.6" letter-spacing="1.5" font-weight="400">SCENARIO → MAIL</text>
+            <text x="72" y="44" text-anchor="middle" font-size="18">📧</text>
+            <text x="72" y="63" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="8.5" fill="#fde68a" opacity="0.5">Mailgun → inbox</text>
+          </g>
+
+          <!-- NODE: GATE 2 ✋ -->
+          <g class="arch-node gate-amber-glow" transform="translate(680, 380)">
+            <rect x="0" y="0" width="170" height="70" rx="12" fill="rgba(120,53,15,0.5)" stroke="#f59e0b" stroke-width="2" stroke-opacity="0.8" filter="url(#glow-amber)"/>
+            <text x="85" y="20" text-anchor="middle" font-size="16">✋</text>
+            <text x="85" y="38" text-anchor="middle" font-family="'Sora', sans-serif" font-size="11" fill="#f59e0b" font-weight="600" letter-spacing="-0.3">GATE 2</text>
+            <text x="85" y="56" text-anchor="middle" font-family="'Sora', sans-serif" font-size="8.5" fill="#fde68a" opacity="0.7" font-weight="300">Human pastes + activates JSON</text>
+          </g>
+
+          <!-- Gate2 loop back to Agent -->
+          <path d="M680 415 Q500 460 500 300 Q500 150 520 150" fill="none" stroke="#f59e0b" stroke-width="1.5" stroke-opacity="0.35" stroke-dasharray="5 6"/>
+
+          <!-- Design principle label at bottom -->
+          <text x="690" y="530" text-anchor="middle" font-family="'JetBrains Mono', monospace" font-size="9" fill="#4a6278" letter-spacing="0.06em">
+            DISCOVERY IS FREE &amp; SAFE (READ-ONLY)  ·  CUSTOMER ACTIONS GO THROUGH OUR MCP, BEHIND A HUMAN GATE
+          </text>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────── SLIDE 4: DISCOVER ──────────────────────────── -->
+  <div class="slide" id="slide-4">
+    <div class="discover-layout">
+      <div class="discover-left">
+        <div class="stagger">
+          <div class="label label-loomi" style="margin-bottom: var(--s2)">Step 1 — READ</div>
+          <h2 style="font-size: var(--text-4xl); font-weight: 800; letter-spacing: -0.04em; line-height: 1.0; margin-bottom: var(--s3);">
+            <span class="grad-cyan">Discover</span>
+          </h2>
+          <p class="body-lg" style="max-width: 500px;">
+            Orbit interrogates Loomi Connect MCP — event schema, EQL analytics, consent settings, scenario list — to diagnose a real revenue opportunity. Not one canned query. Real diagnosis.
+          </p>
+        </div>
+
+        <div class="glass stagger" style="padding: var(--s4); border-radius: 16px;">
+          <div class="label label-loomi" style="margin-bottom: var(--s3)">Loomi Connect MCP — 5 of 81 tools used</div>
+          <div class="tool-list">
+            <div class="tool-badge"><span class="dot dot-loomi"></span>execute_analytics_eql<span style="margin-left: auto; color: var(--text-muted); font-size: 0.7rem;">funnel analysis</span></div>
+            <div class="tool-badge"><span class="dot dot-loomi"></span>get_event_schema<span style="margin-left: auto; color: var(--text-muted); font-size: 0.7rem;">data model</span></div>
+            <div class="tool-badge"><span class="dot dot-loomi"></span>get_customer_property_schema<span style="margin-left: auto; color: var(--text-muted); font-size: 0.7rem;">attribute map</span></div>
+            <div class="tool-badge"><span class="dot dot-loomi"></span>list_scenarios<span style="margin-left: auto; color: var(--text-muted); font-size: 0.7rem;">existing campaigns</span></div>
+            <div class="tool-badge"><span class="dot dot-loomi"></span>get_consent_settings<span style="margin-left: auto; color: var(--text-muted); font-size: 0.7rem;">compliance check</span></div>
+          </div>
+        </div>
+
+        <div class="stagger">
+          <div class="market-breakdown">
+            <div class="label" style="margin-bottom: var(--s2);">Cohort found: 15,274 lapsed one-time buyers</div>
+            <div class="market-row">
+              <span class="market-flag">USA</span>
+              <div class="market-bar-wrap"><div class="market-bar" style="width: 45.8%"></div></div>
+              <span class="market-val">6,998</span>
+            </div>
+            <div class="market-row">
+              <span class="market-flag">UK</span>
+              <div class="market-bar-wrap"><div class="market-bar" style="width: 38.1%"></div></div>
+              <span class="market-val">5,819</span>
+            </div>
+            <div class="market-row">
+              <span class="market-flag">DE</span>
+              <div class="market-bar-wrap"><div class="market-bar" style="width: 16.1%"></div></div>
+              <span class="market-val">2,457</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="discover-right" style="justify-content: center;">
+        <div class="video-frame stagger">
+          <video src="assets/clip-discover.mp4" poster="assets/clip-discover-poster.jpg" preload="metadata" muted loop playsinline></video>
+          <div class="play-overlay" style="background: linear-gradient(to bottom, rgba(3,5,9,0.05) 0%, rgba(3,5,9,0.20) 55%, rgba(3,5,9,0.72) 100%); backdrop-filter: none;">
+            <div class="play-icon"></div>
+            <span class="video-caption" style="color: var(--text-primary, #e8eef7);">Loomi tool-call cards stacking in the Hermes chat</span>
+          </div>
+          <div class="video-slot-label">SLOT 2 · DISCOVER</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────── SLIDE 5: GATE 1 ──────────────────────────── -->
+  <div class="slide" id="slide-5">
+    <div class="gate1-layout">
+      <div style="display: flex; flex-direction: column; gap: var(--s4);">
+        <div class="stagger">
+          <div class="label label-amber" style="margin-bottom: var(--s2)">Human in the loop</div>
+          <h2 style="font-size: var(--text-3xl); font-weight: 700; letter-spacing: -0.03em; line-height: 1.15; margin-bottom: var(--s3);">
+            Gate 1 — the agent<br><span class="grad-amber">stops and asks.</span>
+          </h2>
+          <p class="body-lg" style="max-width: 480px;">
+            Before a single customer is touched, Orbit presents a structured campaign brief and waits. The marketer reads it, approves, and only then does execution begin.
+          </p>
+        </div>
+
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: var(--s3);">
+        <div class="video-frame stagger">
+          <video src="assets/clip-gate1.mp4" poster="assets/clip-gate1-poster.jpg" preload="metadata" muted loop playsinline></video>
+          <div class="play-overlay" style="background: linear-gradient(to bottom, rgba(3,5,9,0.05) 0%, rgba(3,5,9,0.20) 55%, rgba(3,5,9,0.72) 100%); backdrop-filter: none;">
+            <div class="play-icon" style="border-color: var(--amber-vivid); box-shadow: 0 0 30px rgba(245,158,11,0.3);">
+              <span style="border-left-color: var(--amber-vivid); display: block; border-left: 24px solid var(--amber-vivid); border-top: 14px solid transparent; border-bottom: 14px solid transparent; margin-left: 5px;"></span>
+            </div>
+            <span class="video-caption" style="color: #e8eef7;">The agent stops and asks — hard stop until human approval</span>
+          </div>
+          <div class="video-slot-label" style="border-color: var(--amber-border); color: var(--amber-vivid);">SLOT 3 · GATE 1</div>
+        </div>
+        <p style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted); text-align: center; letter-spacing: 0.06em;">
+          "Gate 1 — the agent stops for human approval."
+        </p>
+
+        <div class="glass-amber stagger" style="padding: var(--s3) var(--s4); border-radius: 14px; margin-top: var(--s2);">
+          <div class="label label-amber" style="margin-bottom: var(--s1);">Responsible AI note</div>
+          <p style="font-family: var(--font-mono); font-size: var(--text-xs); color: var(--text-muted); line-height: 1.6; letter-spacing: 0.04em;">
+            Sandbox / synthetic data only — no real customers. Discovery runs on PII-masked aggregates. RFM tier is a transparent heuristic, not an ML model. Agent only acts after human approval.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────── SLIDE 6: OPERATE ──────────────────────────── -->
+  <div class="slide" id="slide-6">
+    <div class="video-slide-layout">
+      <div class="video-content">
+        <div class="stagger">
+          <div class="label label-write" style="margin-bottom: var(--s2)">Step 2 — ACT</div>
+          <h2 style="font-size: var(--text-4xl); font-weight: 800; letter-spacing: -0.04em; line-height: 1.0; margin-bottom: var(--s3);">
+            <span style="background: linear-gradient(135deg, var(--write-vivid), #fca5a5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Operate</span>
+          </h2>
+          <p class="body-lg" style="max-width: 480px;">
+            A deliberately thin write-MCP. Four tools. Orbit sets a customer property, verifies it landed, triggers the win-back scenario, and reads back the result — a real send.
+          </p>
+        </div>
+
+        <div class="glass stagger" style="padding: var(--s4); border-radius: 16px;">
+          <div class="label label-write" style="margin-bottom: var(--s3)">bloomreach-mcp · 4 tools · sequence</div>
+          <div class="tool-list">
+            <div class="tool-badge" style="border-color: rgba(248,113,113,0.2);">
+              <span class="dot dot-write"></span>
+              <span style="color: var(--text-muted); font-size: 0.7rem; margin-right: 6px;">①</span>
+              set_customer_property
+              <span style="margin-left: auto; color: var(--loomi-vivid); font-size: 0.7rem;">→ WB20</span>
+            </div>
+            <div class="tool-badge" style="border-color: rgba(248,113,113,0.2);">
+              <span class="dot dot-write"></span>
+              <span style="color: var(--text-muted); font-size: 0.7rem; margin-right: 6px;">②</span>
+              read_customer_attributes
+              <span style="margin-left: auto; color: var(--loomi-vivid); font-size: 0.7rem;">verified ✓</span>
+            </div>
+            <div class="tool-badge" style="border-color: rgba(248,113,113,0.2);">
+              <span class="dot dot-write"></span>
+              <span style="color: var(--text-muted); font-size: 0.7rem; margin-right: 6px;">③</span>
+              trigger_scenario
+              <span style="margin-left: auto; color: var(--amber-vivid); font-size: 0.7rem;">enqueued</span>
+            </div>
+            <div class="tool-badge" style="border-color: rgba(248,113,113,0.2);">
+              <span class="dot dot-write"></span>
+              <span style="color: var(--text-muted); font-size: 0.7rem; margin-right: 6px;">④</span>
+              read_customer_events
+              <span style="margin-left: auto; color: var(--loomi-vivid); font-size: 0.7rem;">delivered → opened</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="stats-row stagger">
+          <div class="stat-chip">
+            <div class="stat-value">4</div>
+            <div class="stat-label">write-MCP tools</div>
+          </div>
+          <div class="stat-chip">
+            <div class="stat-value" style="color: var(--loomi-vivid);">real send</div>
+            <div class="stat-label">delivered + opened</div>
+          </div>
+          <div class="stat-chip">
+            <div class="stat-value" style="color: var(--amber-vivid);">WB20</div>
+            <div class="stat-label">offer tier applied</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: var(--s3);">
+        <div class="video-frame stagger">
+          <video src="assets/clip-operate.mp4" poster="assets/clip-operate-poster.jpg" preload="metadata" muted loop playsinline></video>
+          <div class="play-overlay" style="background: linear-gradient(to bottom, rgba(3,5,9,0.05) 0%, rgba(3,5,9,0.20) 55%, rgba(3,5,9,0.72) 100%); backdrop-filter: none;">
+            <div class="play-icon" style="border-color: var(--write-vivid); box-shadow: 0 0 30px rgba(248,113,113,0.3);">
+              <span style="display: block; border-left: 24px solid var(--write-vivid); border-top: 14px solid transparent; border-bottom: 14px solid transparent; margin-left: 5px;"></span>
+            </div>
+            <span class="video-caption" style="color: #e8eef7;">Real send via thin write-MCP: enqueued → opened</span>
+          </div>
+          <div class="video-slot-label" style="border-color: rgba(248,113,113,0.35); color: var(--write-vivid);">SLOT 4 · OPERATE</div>
+        </div>
+        <p style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted); text-align: center; letter-spacing: 0.06em;">
+          "A real send through a thin write-MCP."
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────── SLIDE 7: CREATE ──────────────────────────── -->
+  <div class="slide" id="slide-7">
+    <div class="video-slide-layout right-heavy">
+      <div class="video-content">
+        <div class="stagger">
+          <div class="label" style="color: var(--purple-vivid); margin-bottom: var(--s2);">Step 3 — CREATE</div>
+          <h2 style="font-size: var(--text-4xl); font-weight: 800; letter-spacing: -0.04em; line-height: 1.0; margin-bottom: var(--s3);">
+            <span style="background: linear-gradient(135deg, var(--purple-vivid), #c4b5fd); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">Author</span>
+          </h2>
+          <p class="body-lg" style="max-width: 460px;">
+            From one sentence, Orbit authors a brand-new campaign from scratch — audience logic, a full multi-step scenario, and the email itself. The thin MCP stays dumb. <strong style="color: var(--text-primary);">All intelligence lives in Orbit's skills.</strong>
+          </p>
+        </div>
+
+        <div class="glass stagger" style="padding: var(--s4); border-radius: 16px; border-color: rgba(167,139,250,0.2);">
+          <div class="label" style="color: var(--purple-vivid); margin-bottom: var(--s3);">What Orbit creates from scratch</div>
+          <div class="step-list">
+            <div class="step-item"><div class="step-num" style="border-color: rgba(167,139,250,0.3); color: var(--purple-vivid);">1</div>Audience filter in EQL — cohort definition</div>
+            <div class="step-item"><div class="step-num" style="border-color: rgba(167,139,250,0.3); color: var(--purple-vivid);">2</div>Multi-step scenario JSON: send → wait 2 days → branch on open → follow-up</div>
+            <div class="step-item"><div class="step-num" style="border-color: rgba(167,139,250,0.3); color: var(--purple-vivid);">3</div>Authored email: subject, preview, full HTML body</div>
+            <div class="step-item"><div class="step-num" style="border-color: rgba(167,139,250,0.3); color: var(--purple-vivid);">4</div>Scenario JSON validates: <code style="color: var(--loomi-vivid); font-size: 0.75rem;">PASS ✅</code></div>
+            <div class="step-item"><div class="step-num amber">✋</div>Gate 2 — human pastes + activates in Bloomreach UI</div>
+          </div>
+        </div>
+
+        <div class="glass-amber stagger" style="padding: var(--s3) var(--s4); border-radius: 12px;">
+          <div class="label label-amber" style="margin-bottom: var(--s1);">Gate 2 — the payoff of responsible design</div>
+          <p style="font-size: var(--text-sm); font-weight: 300; color: var(--text-secondary); line-height: 1.6;">
+            A new campaign type never auto-deploys. Orbit hands over importable scenario JSON. A human pastes and activates it in the Bloomreach UI. No API auto-deploy.
+          </p>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-direction: column; gap: var(--s3);">
+        <div class="video-frame stagger" style="box-shadow: 0 0 0 1px rgba(167,139,250,0.15), 0 30px 80px rgba(0,0,0,0.6), 0 0 60px rgba(167,139,250,0.08);">
+          <video src="assets/clip-create.mp4" poster="assets/clip-create-poster.jpg" preload="metadata" muted loop playsinline></video>
+          <div class="play-overlay" style="background: linear-gradient(to bottom, rgba(3,5,9,0.05) 0%, rgba(3,5,9,0.20) 55%, rgba(3,5,9,0.72) 100%); backdrop-filter: none;">
+            <div class="play-icon" style="border-color: var(--purple-vivid); box-shadow: 0 0 30px rgba(167,139,250,0.3);">
+              <span style="display: block; border-left: 24px solid var(--purple-vivid); border-top: 14px solid transparent; border-bottom: 14px solid transparent; margin-left: 5px;"></span>
+            </div>
+            <span class="video-caption" style="color: #e8eef7;">Authored scenario JSON + email, rendered in Bloomreach</span>
+          </div>
+          <div class="video-slot-label" style="border-color: rgba(167,139,250,0.35); color: var(--purple-vivid);">SLOT 5 · CREATE</div>
+        </div>
+        <p style="font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-muted); text-align: center; letter-spacing: 0.06em;">
+          "From one sentence to an importable campaign."
+        </p>
+
+        <div class="glass stagger" style="padding: var(--s3) var(--s4); border-radius: 12px; margin-top: var(--s1);">
+          <div class="label" style="margin-bottom: var(--s2);">Orbit's skills (8 total)</div>
+          <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+            <span class="tag-pill" style="background: rgba(167,139,250,0.07); border: 1px solid rgba(167,139,250,0.2); color: var(--purple-vivid);">discover-opportunity</span>
+            <span class="tag-pill" style="background: rgba(167,139,250,0.07); border: 1px solid rgba(167,139,250,0.2); color: var(--purple-vivid);">author-scenario</span>
+            <span class="tag-pill" style="background: rgba(167,139,250,0.07); border: 1px solid rgba(167,139,250,0.2); color: var(--purple-vivid);">author-offer-rfm</span>
+            <span class="tag-pill" style="background: rgba(167,139,250,0.07); border: 1px solid rgba(167,139,250,0.2); color: var(--purple-vivid);">execute-campaign</span>
+            <span class="tag-pill" style="background: rgba(167,139,250,0.07); border: 1px solid rgba(167,139,250,0.2); color: var(--purple-vivid);">check-consent</span>
+            <span class="tag-pill" style="background: rgba(167,139,250,0.07); border: 1px solid rgba(167,139,250,0.2); color: var(--purple-vivid);">read-customer-data</span>
+            <span class="tag-pill" style="background: rgba(167,139,250,0.07); border: 1px solid rgba(167,139,250,0.2); color: var(--purple-vivid);">monitor-and-iterate</span>
+            <span class="tag-pill" style="background: rgba(167,139,250,0.07); border: 1px solid rgba(167,139,250,0.2); color: var(--purple-vivid);">eql-cheatsheet</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ─────────────────────────── SLIDE 8: CLOSING ──────────────────────────── -->
+  <div class="slide" id="slide-8">
+    <div class="closing-layout">
+      <div class="stagger">
+        <div class="label" style="margin-bottom: var(--s3); text-align: center;">The three verbs</div>
+        <div class="verb-trio">
+          <div class="verb-item">
+            <div class="verb-word grad-cyan">READ</div>
+            <div class="verb-desc">Loomi Connect MCP</div>
+          </div>
+          <div class="verb-div">/</div>
+          <div class="verb-item">
+            <div class="verb-word" style="background: linear-gradient(135deg, var(--write-vivid), #fca5a5); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">OPERATE</div>
+            <div class="verb-desc">Custom write-MCP</div>
+          </div>
+          <div class="verb-div">/</div>
+          <div class="verb-item">
+            <div class="verb-word" style="background: linear-gradient(135deg, var(--purple-vivid), #c4b5fd); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">CREATE</div>
+            <div class="verb-desc">Orbit's own skills</div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="glow-line" style="width: 60%; margin: 0 auto;" class="stagger">
+
+      <blockquote class="closing-quote stagger">
+        "Orbit <strong style="color: var(--cyan-vivid); font-style: normal;">reads</strong> with Loomi Connect,
+        <strong style="color: var(--write-vivid); font-style: normal;">operates</strong> through a thin custom MCP,
+        and <strong style="color: var(--purple-vivid); font-style: normal;">creates</strong> entire campaigns from its own skills —
+        with a human at every customer-facing step.<br>
+        <span style="color: var(--text-primary); font-style: normal; font-weight: 500;">Your marketing team's next teammate.</span>"
+      </blockquote>
+
+      <div style="display: flex; gap: var(--s4); flex-wrap: wrap; justify-content: center;" class="stagger">
+        <div class="big-stat" style="min-width: 180px;">
+          <div class="bsv" data-count="15274" data-suffix="">0</div>
+          <div class="bsl">lapsed buyers found</div>
+        </div>
+        <div class="big-stat" style="min-width: 180px;">
+          <div class="bsv" data-count="88" data-suffix="%">0%</div>
+          <div class="bsl">one-and-done rate</div>
+        </div>
+        <div class="big-stat" style="min-width: 180px;">
+          <div class="bsv" data-prefix="~$" data-count="774" data-suffix="K">0</div>
+          <div class="bsl">revenue opportunity</div>
+        </div>
+        <div class="big-stat" style="min-width: 180px;">
+          <div class="bsv" data-count="2" data-suffix=" gates">0</div>
+          <div class="bsl">human approval points</div>
+        </div>
+      </div>
+
+      <div class="responsible-line stagger">
+        ⚠ Sandbox / synthetic data only · PII-masked aggregates · RFM = transparent heuristic · agent acts only after human approval
+      </div>
+
+      <div class="stagger" style="display: flex; gap: var(--s4); flex-wrap: wrap; justify-content: center; margin-top: var(--s1);">
+        <span class="tag-pill pill-cyan">5 Loomi tools</span>
+        <span class="tag-pill pill-write">4 write-MCP tools</span>
+        <span class="tag-pill" style="background: rgba(167,139,250,0.08); border: 1px solid rgba(167,139,250,0.25); color: var(--purple-vivid);">8 agent skills</span>
+        <span class="tag-pill pill-amber">1 docker compose up</span>
+        <span class="tag-pill pill-cyan">~123K customers · ~1.17M events</span>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /#deck -->
+
+<!-- ═══════════════════════════════════════════════════════════ -->
+<!--  JAVASCRIPT                                                 -->
+<!-- ═══════════════════════════════════════════════════════════ -->
+<script>
+/* ──────────────────────────────────────────────────
+   STARFIELD
+────────────────────────────────────────────────── */
+(function() {
+  const canvas = document.getElementById('starfield');
+  const ctx = canvas.getContext('2d');
+  let W, H, stars = [], animId;
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (prefersReduced) { canvas.style.display = 'none'; return; }
+
+  function resize() {
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+  }
+
+  function initStars() {
+    stars = [];
+    const count = Math.floor((W * H) / 3200);
+    for (let i = 0; i < count; i++) {
+      stars.push({
+        x: Math.random() * W,
+        y: Math.random() * H,
+        r: Math.random() * 1.3 + 0.15,
+        alpha: Math.random() * 0.6 + 0.15,
+        twinkleSpeed: Math.random() * 0.008 + 0.003,
+        twinkleOffset: Math.random() * Math.PI * 2,
+        parallaxDepth: Math.random() * 0.4 + 0.1,
+      });
+    }
+  }
+
+  let t = 0;
+  function draw() {
+    ctx.clearRect(0, 0, W, H);
+    t += 0.012;
+    for (const s of stars) {
+      const twinkle = 0.4 + 0.6 * (0.5 + 0.5 * Math.sin(t * s.twinkleSpeed * 80 + s.twinkleOffset));
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(200, 220, 255, ${s.alpha * twinkle})`;
+      ctx.fill();
+    }
+    animId = requestAnimationFrame(draw);
+  }
+
+  resize();
+  initStars();
+  draw();
+
+  window.addEventListener('resize', () => {
+    cancelAnimationFrame(animId);
+    resize();
+    initStars();
+    draw();
+  });
+})();
+
+/* ──────────────────────────────────────────────────
+   ORBITAL HERO CANVAS (Slide 1)
+────────────────────────────────────────────────── */
+(function() {
+  const canvas = document.getElementById('orbital-canvas');
+  const ctx = canvas.getContext('2d');
+  let W, H, animId;
+
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function resize() {
+    W = canvas.width = canvas.parentElement.offsetWidth;
+    H = canvas.height = canvas.parentElement.offsetHeight;
+  }
+
+  // Define orbital bodies
+  const bodies = [
+    {
+      label: 'Bloomreach',
+      sublabel: 'Engagement',
+      r: 38, color: '#94a3b8', glow: 'rgba(148,163,184,0.4)',
+      isCenter: true,
+    },
+    {
+      label: 'Orbit',
+      sublabel: 'agent',
+      r: 22, color: '#a78bfa', glow: 'rgba(167,139,250,0.5)',
+      orbitA: 145, orbitB: 80, speed: 0.0022, phase: 0, tilt: -0.15,
+    },
+    {
+      label: 'Loomi',
+      sublabel: 'read-only',
+      r: 18, color: '#22d3a5', glow: 'rgba(34,211,165,0.5)',
+      orbitA: 210, orbitB: 95, speed: 0.0014, phase: Math.PI * 0.7, tilt: 0.2,
+    },
+    {
+      label: 'write-MCP',
+      sublabel: '4 tools',
+      r: 15, color: '#f87171', glow: 'rgba(248,113,113,0.5)',
+      orbitA: 175, orbitB: 60, speed: 0.003, phase: Math.PI * 1.4, tilt: -0.3,
+    },
+  ];
+
+  // Scale the orbital system up — canvas is now a full-slide layer.
+  // Spheres ×3 for visual mass; orbit spread a touch less so bodies stay
+  // clear of the title text on the left.
+  const BODY_SCALE = 3, ORBIT_SCALE = 2.2;
+  for (const b of bodies) {
+    b.r *= BODY_SCALE;
+    if (b.orbitA) b.orbitA *= ORBIT_SCALE;
+    if (b.orbitB) b.orbitB *= ORBIT_SCALE;
+  }
+
+  // Trail state
+  for (const b of bodies) {
+    if (!b.isCenter) b.trail = [];
+  }
+
+  let t = 0;
+
+  function drawEllipse(cx, cy, a, b, tilt, color) {
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.rotate(tilt);
+    ctx.beginPath();
+    ctx.ellipse(0, 0, a, b, 0, 0, Math.PI * 2);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function getPos(cx, cy, body, time) {
+    const angle = time * body.speed + body.phase;
+    const cos = Math.cos(body.tilt), sin = Math.sin(body.tilt);
+    const lx = body.orbitA * Math.cos(angle);
+    const ly = body.orbitB * Math.sin(angle);
+    return {
+      x: cx + lx * cos - ly * sin,
+      y: cy + lx * sin + ly * cos,
+    };
+  }
+
+  function drawBody(pos, body, isCenter, cx, cy) {
+    const x = isCenter ? cx : pos.x;
+    const y = isCenter ? cy : pos.y;
+
+    // Glow aura
+    const grad = ctx.createRadialGradient(x, y, 0, x, y, body.r * 3.5);
+    grad.addColorStop(0, body.glow);
+    grad.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.beginPath();
+    ctx.arc(x, y, body.r * 3.5, 0, Math.PI * 2);
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    // Core circle
+    ctx.beginPath();
+    ctx.arc(x, y, body.r, 0, Math.PI * 2);
+    ctx.fillStyle = body.color;
+    ctx.fill();
+
+    // Inner highlight
+    const hl = ctx.createRadialGradient(x - body.r * 0.3, y - body.r * 0.3, 0, x, y, body.r);
+    hl.addColorStop(0, 'rgba(255,255,255,0.35)');
+    hl.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.beginPath();
+    ctx.arc(x, y, body.r, 0, Math.PI * 2);
+    ctx.fillStyle = hl;
+    ctx.fill();
+
+    // Label
+    ctx.fillStyle = 'rgba(240,244,248,0.85)';
+    ctx.font = `600 ${isCenter ? 19 : 15}px 'Sora', sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.fillText(body.label, x, y + body.r + 26);
+    ctx.font = `300 13px 'JetBrains Mono', monospace`;
+    ctx.fillStyle = 'rgba(139,164,188,0.65)';
+    ctx.fillText(body.sublabel, x, y + body.r + 44);
+  }
+
+  function drawTrail(trail, color) {
+    if (trail.length < 2) return;
+    for (let i = 1; i < trail.length; i++) {
+      const alpha = (i / trail.length) * 0.5;
+      ctx.beginPath();
+      ctx.moveTo(trail[i-1].x, trail[i-1].y);
+      ctx.lineTo(trail[i].x, trail[i].y);
+      ctx.strokeStyle = color.replace(')', `, ${alpha})`).replace('rgb', 'rgba');
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+    }
+  }
+
+  // Connection lines between bodies
+  function drawConnections(positions, cx, cy) {
+    // Orbit ↔ Bloomreach center
+    const orbitPos = positions[0];
+    ctx.beginPath();
+    ctx.moveTo(cx, cy);
+    ctx.lineTo(orbitPos.x, orbitPos.y);
+    ctx.strokeStyle = 'rgba(167,139,250,0.15)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3, 6]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Loomi ↔ Orbit
+    const loomiPos = positions[1];
+    ctx.beginPath();
+    ctx.moveTo(orbitPos.x, orbitPos.y);
+    ctx.lineTo(loomiPos.x, loomiPos.y);
+    ctx.strokeStyle = 'rgba(34,211,165,0.12)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([2, 7]);
+    ctx.stroke();
+    ctx.setLineDash([]);
+  }
+
+  function draw() {
+    if (!W || !H) { resize(); }
+    ctx.clearRect(0, 0, W, H);
+
+    const cx = W * 0.66, cy = H * 0.5;
+    t++;
+
+    // Draw orbit rings
+    for (const b of bodies) {
+      if (!b.isCenter) {
+        drawEllipse(cx, cy, b.orbitA, b.orbitB, b.tilt, 'rgba(255,255,255,0.05)');
+      }
+    }
+
+    // Compute positions
+    const positions = [];
+    for (const b of bodies) {
+      if (!b.isCenter) {
+        const pos = getPos(cx, cy, b, t);
+        positions.push(pos);
+        b.trail.push({...pos});
+        if (b.trail.length > 30) b.trail.shift();
+      }
+    }
+
+    // Connections
+    drawConnections(positions, cx, cy);
+
+    // Trails
+    let pi = 0;
+    for (const b of bodies) {
+      if (!b.isCenter) {
+        drawTrail(b.trail, b.glow.replace('rgba', 'rgb').replace(/,\s*[\d.]+\)/, ')'));
+        pi++;
+      }
+    }
+
+    // Bodies (center last = on top)
+    pi = 0;
+    for (const b of bodies) {
+      if (!b.isCenter) {
+        drawBody(positions[pi], b, false, cx, cy);
+        pi++;
+      }
+    }
+    // Center
+    drawBody(null, bodies[0], true, cx, cy);
+
+    if (!prefersReduced) {
+      animId = requestAnimationFrame(draw);
+    }
+  }
+
+  window.addEventListener('resize', () => {
+    cancelAnimationFrame(animId);
+    resize();
+    draw();
+  });
+
+  // Start when slide 1 is active
+  resize();
+  draw();
+})();
+
+/* ──────────────────────────────────────────────────
+   SLIDE DECK NAVIGATION
+────────────────────────────────────────────────── */
+const slides = Array.from(document.querySelectorAll('.slide'));
+const dots   = Array.from(document.querySelectorAll('.nav-dot'));
+const TOTAL  = slides.length;
+let current = 0;
+let isTransitioning = false;
+
+function goTo(idx, direction) {
+  if (idx === current || isTransitioning) return;
+  if (idx < 0 || idx >= TOTAL) return;
+  isTransitioning = true;
+
+  const outSlide = slides[current];
+  const inSlide  = slides[idx];
+
+  // Remove stagger animations so they re-fire
+  inSlide.querySelectorAll('.stagger').forEach(el => {
+    el.style.animation = 'none';
+    void el.offsetWidth;
+    el.style.animation = '';
+  });
+
+  outSlide.classList.add('exit-up');
+  outSlide.classList.remove('active');
+
+  setTimeout(() => { outSlide.classList.remove('exit-up'); }, 500);
+
+  inSlide.classList.add('active');
+
+  current = idx;
+  updateNav();
+  triggerSlideEffects(idx);
+
+  setTimeout(() => { isTransitioning = false; }, 700);
+}
+
+function updateNav() {
+  dots.forEach((d, i) => d.classList.toggle('active', i === current));
+  document.getElementById('progress-bar').style.width = ((current + 1) / TOTAL * 100) + '%';
+  const n = String(current + 1).padStart(2, '0');
+  document.getElementById('cur-slide').textContent = n;
+}
+
+dots.forEach((d, i) => d.addEventListener('click', () => goTo(i)));
+document.getElementById('btn-prev').addEventListener('click', () => goTo(current - 1));
+document.getElementById('btn-next').addEventListener('click', () => goTo(current + 1));
+
+document.addEventListener('keydown', e => {
+  if (window.__vlOpen) {
+    if (e.key === 'Escape' || e.key === 'Enter') {
+      e.preventDefault();
+      if (window.__closeLightbox) window.__closeLightbox();
+    } else if (e.key === ' ') {
+      e.preventDefault();
+      if (window.__vlTogglePlay) window.__vlTogglePlay();
+    } else if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      if (window.__vlSeekBy) window.__vlSeekBy(5);
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      if (window.__vlSeekBy) window.__vlSeekBy(-5);
+    }
+    return;   // deck nav is inert while a video is expanded
+  }
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); goTo(current + 1); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); goTo(current - 1); }
+});
+
+/* ──────────────────────────────────────────────────
+   STAT COUNTER ANIMATION
+────────────────────────────────────────────────── */
+function animateCounters(slideEl) {
+  slideEl.querySelectorAll('[data-count]').forEach(el => {
+    const target = parseInt(el.dataset.count, 10);
+    const prefix = el.dataset.prefix || '';
+    const suffix = el.dataset.suffix || '';
+    const duration = 1400;
+    const start = performance.now();
+
+    function update(now) {
+      const elapsed = now - start;
+      const progress = Math.min(elapsed / duration, 1);
+      // Ease out cubic
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const value = Math.round(eased * target);
+      el.textContent = prefix + value.toLocaleString() + suffix;
+      if (progress < 1) requestAnimationFrame(update);
+    }
+
+    requestAnimationFrame(update);
+  });
+}
+
+/* ──────────────────────────────────────────────────
+   PER-SLIDE EFFECTS
+────────────────────────────────────────────────── */
+function handleSlideVideos(idx) {
+  // pause + reset every inline slide video; restore their overlays (poster + play button)
+  document.querySelectorAll('.slide .video-frame video').forEach(v => {
+    try { v.pause(); v.currentTime = 0; } catch (e) {}
+    const ov = v.parentElement.querySelector('.play-overlay');
+    if (ov) ov.classList.remove('playing');
+  });
+  // autoplay the current slide's clip inline (muted + looping). If the file is
+  // missing or the codec isn't supported (e.g. .mov in Chrome), play() rejects
+  // and we keep the poster + play button — nothing breaks.
+  const v = slides[idx] && slides[idx].querySelector('.video-frame video');
+  if (v && v.getAttribute('src')) {
+    const ov = v.parentElement.querySelector('.play-overlay');
+    v.muted = true;
+    v.playbackRate = 2;
+    try {
+      const p = v.play();
+      if (p && p.then) {
+        p.then(() => { if (ov) ov.classList.add('playing'); }).catch(() => {});
+      } else if (ov) { ov.classList.add('playing'); }
+    } catch (e) {}
+  }
+}
+
+/* ──────────────────────────────────────────────────
+   VOICEOVER — per-slide narration
+   Add filenames as you generate them. null = silent slide.
+────────────────────────────────────────────────── */
+const SLIDE_AUDIO = [
+  'assets/1-2slide.wav',  // slide 1  ┐ same file → keeps playing across 1→2
+  'assets/1-2slide.wav',  // slide 2  ┘
+  'assets/3slide.wav',    // slide 3
+  'assets/4slide.wav',    // slide 4
+  'assets/5slide.wav',    // slide 5  (Gate 1)
+  'assets/6slide.wav',    // slide 6  (Operate / send)
+  'assets/7slide.wav',    // slide 7  (Create / author)
+  'assets/8slide.wav'     // slide 8  (Close)
+];
+const vo = document.getElementById('vo');
+const voToggle = document.getElementById('vo-toggle');
+let voCurrentFile = null;
+let voUserMuted = false;   // respect an explicit pause; don't auto-resume until they re-enable
+
+function setVoIcon(state) { // 'playing' | 'muted' | 'none'
+  voToggle.classList.remove('playing', 'muted', 'no-audio');
+  voToggle.classList.add(state === 'playing' ? 'playing' : state === 'none' ? 'no-audio' : 'muted');
+}
+
+function handleSlideAudio(idx) {
+  const file = SLIDE_AUDIO[idx] || null;
+  if (!file) { vo.pause(); voCurrentFile = null; setVoIcon('none'); return; }
+  if (file !== voCurrentFile) {          // new narration → load + restart
+    voCurrentFile = file;
+    vo.src = file;
+    try { vo.currentTime = 0; } catch (e) {}
+  }                                      // same file across slides → just continue
+  if (voUserMuted) { setVoIcon('muted'); return; }
+  const p = vo.play();
+  if (p && p.then) p.then(() => setVoIcon('playing')).catch(() => setVoIcon('muted'));
+  else setVoIcon('playing');
+}
+
+voToggle.addEventListener('click', () => {
+  if (voToggle.classList.contains('no-audio')) return;
+  if (vo.paused) { voUserMuted = false; vo.play().then(() => setVoIcon('playing')).catch(() => {}); }
+  else { voUserMuted = true; vo.pause(); setVoIcon('muted'); }
+});
+vo.addEventListener('ended', () => { if (!voToggle.classList.contains('no-audio')) setVoIcon('muted'); });
+
+function triggerSlideEffects(idx) {
+  handleSlideVideos(idx);
+  handleSlideAudio(idx);
+  // Animate counters when their slide comes in
+  if (idx === 3 || idx === 7) {
+    setTimeout(() => animateCounters(slides[idx]), 300);
+  }
+  // Market bars reset + animate
+  if (idx === 3) {
+    const bars = slides[3].querySelectorAll('.market-bar');
+    bars.forEach(b => {
+      const w = b.style.width;
+      b.style.width = '0%';
+      void b.offsetWidth;
+      b.style.width = w;
+      b.style.animation = 'none';
+      void b.offsetWidth;
+      b.style.animation = 'bar-fill 1.2s cubic-bezier(0.16,1,0.3,1) both';
+    });
+  }
+}
+
+// Fire for slide 0 on load (audio autoplay is blocked pre-interaction →
+// icon shows muted until the first arrow press or a click on the speaker)
+handleSlideAudio(current);
+
+/* ──────────────────────────────────────────────────
+   PRESENTER HINT
+────────────────────────────────────────────────── */
+const hint = document.getElementById('hint');
+document.getElementById('hint-close').addEventListener('click', e => {
+  e.stopPropagation();
+  hint.classList.add('dismissed');
+});
+hint.addEventListener('click', () => hint.classList.add('dismissed'));
+
+// Auto-dismiss after 8s
+setTimeout(() => hint.classList.add('dismissed'), 8000);
+
+/* ──────────────────────────────────────────────────
+   ARCH SVG: RE-ANIMATE PULSES ON SLIDE 3 ENTER
+────────────────────────────────────────────────── */
+const origGoTo = goTo;
+// patch to reset arch animations
+(function patchNav() {
+  const original = goTo;
+})();
+
+/* ──────────────────────────────────────────────────
+   TOUCH SWIPE SUPPORT
+────────────────────────────────────────────────── */
+let touchStartX = 0;
+document.addEventListener('touchstart', e => { touchStartX = e.touches[0].clientX; }, { passive: true });
+document.addEventListener('touchend', e => {
+  if (window.__vlOpen) return;
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  if (Math.abs(dx) > 50) goTo(current + (dx < 0 ? 1 : -1));
+}, { passive: true });
+
+</script>
+
+<!-- VIDEO LIGHTBOX -->
+<div id="video-lightbox" aria-hidden="true">
+  <div class="vl-backdrop"></div>
+  <button class="vl-close" aria-label="Close video">&#10005;</button>
+  <div class="vl-stage">
+    <video class="vl-video" playsinline></video>
+    <div class="vl-empty">Drop your screen recording here<br><span style="opacity:.6">(assets/clip-*.mp4)</span></div>
+    <div class="vl-controls">
+      <input type="range" class="vl-seek" min="0" max="1000" value="0" step="1" aria-label="Seek timeline">
+      <div class="vl-ctl-row">
+        <button class="vl-btn vl-play" aria-label="Play / pause">&#10074;&#10074;</button>
+        <span class="vl-time"><span class="vl-cur">0:00</span> / <span class="vl-dur">0:00</span></span>
+        <span class="vl-spacer"></span>
+        <span class="vl-speeds">
+          <button class="vl-speed" data-rate="0.5">0.5&times;</button>
+          <button class="vl-speed" data-rate="1">1&times;</button>
+          <button class="vl-speed" data-rate="1.5">1.5&times;</button>
+          <button class="vl-speed active" data-rate="2">2&times;</button>
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ──────────────────────────────────────────────────
+   VIDEO LIGHTBOX — click a video to zoom to widescreen
+   and play; click again / Esc / ✕ to pause + shrink back
+────────────────────────────────────────────────── */
+(function(){
+  const reduced  = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const lb       = document.getElementById('video-lightbox');
+  const stage    = lb.querySelector('.vl-stage');
+  const vid      = lb.querySelector('.vl-video');
+  const empty    = lb.querySelector('.vl-empty');
+  const closeBtn = lb.querySelector('.vl-close');
+  const controls = lb.querySelector('.vl-controls');
+  const seek     = lb.querySelector('.vl-seek');
+  const playBtn  = lb.querySelector('.vl-play');
+  const curEl    = lb.querySelector('.vl-cur');
+  const durEl    = lb.querySelector('.vl-dur');
+  const speedBtns= Array.from(lb.querySelectorAll('.vl-speed'));
+  let lastThumb  = null;
+  let curRate    = 2;        // default playback speed (2× faster)
+  let seeking    = false;
+  window.__vlOpen = false;
+
+  function fmtTime(t){
+    if (!isFinite(t) || t < 0) return '0:00';
+    const m = Math.floor(t / 60), s = Math.floor(t % 60);
+    return m + ':' + (s < 10 ? '0' : '') + s;
+  }
+
+  // FLIP transform: where the big stage must start to line up with `rect`
+  function flipFrom(rect){
+    const f  = stage.getBoundingClientRect();
+    const dx = (rect.left + rect.width/2)  - (f.left + f.width/2);
+    const dy = (rect.top  + rect.height/2) - (f.top  + f.height/2);
+    const s  = Math.max(rect.width / f.width, rect.height / f.height);
+    return 'translate(' + dx + 'px,' + dy + 'px) scale(' + s + ')';
+  }
+
+  function openLightbox(frame){
+    if (window.__vlOpen) return;
+    const srcEl = frame.querySelector('video');
+    const src   = srcEl ? srcEl.getAttribute('src') : '';
+    lastThumb = frame;
+
+    if (src) { vid.src = src; vid.style.display = 'block'; empty.style.display = 'none'; }
+    else     { vid.removeAttribute('src'); vid.style.display = 'none'; empty.style.display = 'flex'; }
+
+    lb.classList.add('show');
+    lb.setAttribute('aria-hidden','false');
+    document.body.classList.add('vl-open');
+    window.__vlOpen = true;
+
+    if (!reduced){
+      // FLIP: start matched to the thumbnail, then animate to centered/full.
+      // Forced-reflow (not rAF) so it commits reliably even in throttled tabs.
+      stage.style.transition = 'none';
+      stage.style.transform  = flipFrom(frame.getBoundingClientRect());
+      stage.getBoundingClientRect();            // commit the start frame
+      stage.style.transition = 'transform 0.55s cubic-bezier(0.16,1,0.3,1)';
+      stage.style.transform  = 'translate(0,0) scale(1)';
+    } else {
+      stage.style.transition = 'none';
+      stage.style.transform  = 'translate(0,0) scale(1)';
+    }
+
+    seek.value = 0; curEl.textContent = '0:00'; durEl.textContent = '0:00';
+    if (src){ try { vid.currentTime = 0; vid.playbackRate = curRate; const p = vid.play(); if (p && p.catch) p.catch(function(){}); } catch(e){} }
+  }
+
+  function closeLightbox(){
+    if (!window.__vlOpen) return;
+    vid.pause();
+
+    function finish(){
+      lb.classList.remove('show','closing');
+      lb.setAttribute('aria-hidden','true');
+      document.body.classList.remove('vl-open');
+      stage.style.transition = 'none';
+      stage.style.transform  = 'translate(0,0) scale(1)';
+      stage.getBoundingClientRect();
+      stage.style.transition = '';
+      vid.removeAttribute('src');
+      window.__vlOpen = false;
+      stage.removeEventListener('transitionend', onEnd);
+    }
+    function onEnd(e){ if (e.target === stage && e.propertyName === 'transform') finish(); }
+
+    if (!reduced && lastThumb){
+      lb.classList.add('closing');
+      stage.style.transition = 'transform 0.5s cubic-bezier(0.4,0,0.2,1)';
+      stage.getBoundingClientRect();            // commit identity as the start
+      stage.addEventListener('transitionend', onEnd);
+      stage.style.transform = flipFrom(lastThumb.getBoundingClientRect());
+      setTimeout(function(){ if (window.__vlOpen) finish(); }, 800);   // safety
+    } else {
+      finish();
+    }
+  }
+
+  // Wire each video frame: add an affordance badge + click to open
+  document.querySelectorAll('.video-frame').forEach(function(f){
+    const badge = document.createElement('div');
+    badge.className = 'expand-badge';
+    badge.innerHTML = '&#8690; Click to expand';
+    f.appendChild(badge);
+    f.addEventListener('click', function(){ openLightbox(f); });
+  });
+
+  // Any click on the overlay (backdrop or the playing video) closes it
+  lb.addEventListener('click', closeLightbox);
+  closeBtn.addEventListener('click', function(e){ e.stopPropagation(); closeLightbox(); });
+
+  // If a clip file is missing (404), show the drop-here hint instead of black
+  vid.addEventListener('error', function(){ vid.style.display = 'none'; empty.style.display = 'flex'; });
+
+  /* ── CUSTOM CONTROLS: timeline scrub + play/pause + speed ── */
+  // Clicks inside the controls bar must not bubble up and close the lightbox.
+  controls.addEventListener('click', function(e){ e.stopPropagation(); });
+
+  playBtn.addEventListener('click', function(e){
+    e.stopPropagation();
+    if (vid.paused) { var p = vid.play(); if (p && p.catch) p.catch(function(){}); }
+    else vid.pause();
+  });
+  vid.addEventListener('play',  function(){ playBtn.innerHTML = '❚❚'; });   // ❚❚
+  vid.addEventListener('pause', function(){ playBtn.innerHTML = '▶'; });          // ▶
+
+  // playbackRate gets reset whenever a new source loads — re-apply it.
+  vid.addEventListener('loadedmetadata', function(){
+    vid.playbackRate = curRate;
+    durEl.textContent = fmtTime(vid.duration);
+  });
+  vid.addEventListener('timeupdate', function(){
+    if (seeking) return;
+    curEl.textContent = fmtTime(vid.currentTime);
+    if (vid.duration) seek.value = (vid.currentTime / vid.duration) * 1000;
+  });
+
+  seek.addEventListener('input', function(e){
+    e.stopPropagation();
+    seeking = true;
+    if (vid.duration) curEl.textContent = fmtTime((seek.value / 1000) * vid.duration);
+  });
+  seek.addEventListener('change', function(e){
+    e.stopPropagation();
+    if (vid.duration) vid.currentTime = (seek.value / 1000) * vid.duration;
+    seeking = false;
+  });
+
+  speedBtns.forEach(function(b){
+    b.addEventListener('click', function(e){
+      e.stopPropagation();
+      curRate = parseFloat(b.dataset.rate);
+      vid.playbackRate = curRate;
+      speedBtns.forEach(function(x){ x.classList.toggle('active', x === b); });
+    });
+  });
+
+  window.__closeLightbox = closeLightbox;
+  window.__vlTogglePlay  = function(){
+    if (!window.__vlOpen) return;
+    if (vid.paused) { var p = vid.play(); if (p && p.catch) p.catch(function(){}); }
+    else vid.pause();
+  };
+  window.__vlSeekBy = function(delta){
+    if (!window.__vlOpen || !vid.duration) return;
+    vid.currentTime = Math.min(vid.duration, Math.max(0, vid.currentTime + delta));
+  };
+})();
+</script>
+</body>
+</html>

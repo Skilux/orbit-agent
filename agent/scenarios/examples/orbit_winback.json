@@ -1,0 +1,195 @@
+{
+  "scenarioId": "6a1c6288edee51fad10d64aa",
+  "appVersion": "v1.310.0-0-g8cfbd920",
+  "copiedData": {
+    "nodes": [
+      {
+        "bee_free_html_output": null,
+        "cached_email_hash": "cd7d38872a9e729abede489755f5d7e23a1848b881a4de354d21db6b3856de79",
+        "communication_type": "",
+        "concurrency_limit": null,
+        "consent_category": "other",
+        "consent_category_tracking": null,
+        "content_sources": [],
+        "custom_event_properties": [],
+        "custom_headers": null,
+        "design": {
+          "data": {
+            "file_ids": [],
+            "jinja_html": "<!DOCTYPE html>\n<html lang=\"en\" xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:o=\"urn:schemas-microsoft-com:office:office\">\n<head>\n  <meta charset=\"utf-8\">\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n  <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\n  <meta name=\"x-apple-disable-message-reformatting\">\n  <meta name=\"color-scheme\" content=\"light\">\n  <meta name=\"supported-color-schemes\" content=\"light\">\n  <title>We've missed you at Pacific Apparel</title>\n  <!--[if mso]>\n  <noscript>\n    <xml>\n      <o:OfficeDocumentSettings>\n        <o:PixelsPerInch>96</o:PixelsPerInch>\n      </o:OfficeDocumentSettings>\n    </xml>\n  </noscript>\n  <![endif]-->\n  <!-- Progressive-enhancement styles only. Base layout works from inline styles alone. -->\n  <style>\n    body { margin: 0; padding: 0; width: 100% !important; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }\n    table { border-collapse: collapse !important; }\n    img { border: 0; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; }\n    a { text-decoration: none; }\n    .pa-hover-cta:hover { background-color: #8a3f2b !important; }\n    .pa-cat-link:hover { color: #b14f35 !important; }\n    @media only screen and (max-width: 600px) {\n      .pa-container { width: 100% !important; }\n      .pa-px { padding-left: 28px !important; padding-right: 28px !important; }\n      .pa-h1 { font-size: 30px !important; line-height: 38px !important; }\n      .pa-offer-num { font-size: 52px !important; line-height: 52px !important; }\n      .pa-stack { display: block !important; width: 100% !important; }\n      .pa-cat-cell { display: block !important; width: 100% !important; padding: 0 0 24px 0 !important; }\n      .pa-cat-img { width: 100% !important; height: auto !important; }\n      .pa-hide-sm { display: none !important; }\n    }\n  </style>\n</head>\n<body style=\"margin:0; padding:0; background-color:#f3ede4; color:#2b2724; font-family: Helvetica, Arial, sans-serif;\">\n\n  <!-- Preheader (hidden preview text) -->\n  <div style=\"display:none; font-size:1px; line-height:1px; max-height:0; max-width:0; opacity:0; overflow:hidden; mso-hide:all; color:#f3ede4;\">\n    We saved your spot &mdash; {{ customer.discount_tier | default('20') }}% off inside.\n    &nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;\n  </div>\n\n  <!-- Fluid outer wrapper -->\n  <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"background-color:#f3ede4;\">\n    <tr>\n      <td align=\"center\" style=\"padding:0;\">\n\n        <!--[if mso]><table role=\"presentation\" width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tr><td><![endif]-->\n        <table role=\"presentation\" class=\"pa-container\" width=\"600\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" align=\"center\" style=\"width:600px; max-width:600px; margin:0 auto;\">\n\n          <!-- Top spacer + eyebrow -->\n          <tr>\n            <td align=\"center\" class=\"pa-px\" style=\"padding:28px 48px 0 48px;\">\n              <p style=\"margin:0; font-family: Helvetica, Arial, sans-serif; font-size:11px; letter-spacing:3px; text-transform:uppercase; color:#9a8f80;\">\n                Spring 2026 Collection\n              </p>\n            </td>\n          </tr>\n\n          <!-- Header / wordmark -->\n          <tr>\n            <td align=\"center\" class=\"pa-px\" style=\"padding:14px 48px 22px 48px; border-bottom:1px solid #e0d6c8;\">\n              <a href=\"#\" style=\"text-decoration:none;\">\n                <span style=\"font-family: Georgia, 'Times New Roman', Times, serif; font-size:26px; letter-spacing:5px; color:#2b2724; text-transform:uppercase; font-weight:normal;\">Pacific</span>\n                <span style=\"font-family: Georgia, 'Times New Roman', Times, serif; font-size:26px; letter-spacing:5px; color:#b14f35; text-transform:uppercase; font-weight:normal;\">&nbsp;Apparel</span>\n              </a>\n            </td>\n          </tr>\n\n          <!-- White content card -->\n          <tr>\n            <td style=\"padding:0; background-color:#fbf8f3;\">\n\n\n              <!-- Hero copy -->\n              <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n                <tr>\n                  <td class=\"pa-px\" style=\"padding:40px 48px 8px 48px;\">\n                    <p style=\"margin:0 0 14px 0; font-family: Helvetica, Arial, sans-serif; font-size:11px; letter-spacing:3px; text-transform:uppercase; color:#b14f35;\">\n                      Modern Elegance\n                    </p>\n                    <h1 class=\"pa-h1\" style=\"margin:0 0 18px 0; font-family: Georgia, 'Times New Roman', Times, serif; font-weight:normal; font-size:38px; line-height:46px; color:#2b2724;\">\n                      We&rsquo;ve missed you,<br>{{ customer.first_name | default('there') }}.\n                    </h1>\n                    <p style=\"margin:0; font-family: Georgia, 'Times New Roman', Times, serif; font-size:17px; line-height:28px; color:#5a5249;\">\n                      It&rsquo;s been a little while. The Spring 2026 collection has just landed &mdash; lighter layers, refined tailoring, and the easy pieces you&rsquo;ll reach for all season. We saved something to welcome you back.\n                    </p>\n                  </td>\n                </tr>\n              </table>\n\n              <!-- Offer block -->\n              <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n                <tr>\n                  <td class=\"pa-px\" style=\"padding:34px 48px 6px 48px;\">\n                    <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" style=\"background-color:#2b2724; border-radius:4px;\">\n                      <tr>\n                        <td align=\"center\" style=\"padding:38px 32px 34px 32px;\">\n                          <p style=\"margin:0 0 6px 0; font-family: Helvetica, Arial, sans-serif; font-size:11px; letter-spacing:3px; text-transform:uppercase; color:#c9a892;\">\n                            A welcome-back gift\n                          </p>\n                          <p class=\"pa-offer-num\" style=\"margin:0; font-family: Georgia, 'Times New Roman', Times, serif; font-size:64px; line-height:64px; color:#ffffff; font-weight:normal;\">\n                            {{ customer.discount_tier | default('20') }}% OFF\n                          </p>\n                          <p style=\"margin:6px 0 26px 0; font-family: Helvetica, Arial, sans-serif; font-size:14px; letter-spacing:2px; text-transform:uppercase; color:#e7dccf;\">\n                            Your Next Order\n                          </p>\n\n                          <!-- Code box (dashed/bordered) -->\n                          <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" align=\"center\" style=\"margin:0 auto;\">\n                            <tr>\n                              <td align=\"center\" style=\"border:2px dashed #c9a892; border-radius:4px; padding:14px 30px; background-color:#332e2a;\">\n                                <span style=\"font-family: Helvetica, Arial, sans-serif; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:#c9a892;\">Use code</span><br>\n                                <span style=\"font-family: Georgia, 'Times New Roman', Times, serif; font-size:24px; letter-spacing:5px; color:#ffffff;\">{{ customer.offer_code | default('COMEBACK20') }}</span>\n                              </td>\n                            </tr>\n                          </table>\n\n                          <p style=\"margin:22px 0 0 0; font-family: Helvetica, Arial, sans-serif; font-size:12px; line-height:18px; color:#a99b8b;\">\n                            Plus free shipping on orders over $99.\n                          </p>\n                        </td>\n                      </tr>\n                    </table>\n                  </td>\n                </tr>\n              </table>\n\n              <!-- CTA button (bulletproof) -->\n              <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n                <tr>\n                  <td align=\"center\" class=\"pa-px\" style=\"padding:30px 48px 12px 48px;\">\n                    <!--[if mso]>\n                    <v:roundrect xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:w=\"urn:schemas-microsoft-com:office:word\" href=\"#\" style=\"height:54px;v-text-anchor:middle;width:300px;\" arcsize=\"6%\" strokecolor=\"#b14f35\" fillcolor=\"#b14f35\">\n                      <w:anchorlock/>\n                      <center style=\"color:#ffffff;font-family:Helvetica,Arial,sans-serif;font-size:13px;letter-spacing:2px;font-weight:bold;\">SHOP THE NEW COLLECTION</center>\n                    </v:roundrect>\n                    <![endif]-->\n                    <!--[if !mso]><!-- -->\n                    <table role=\"presentation\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\" align=\"center\" style=\"margin:0 auto;\">\n                      <tr>\n                        <td class=\"pa-hover-cta\" align=\"center\" bgcolor=\"#b14f35\" style=\"background-color:#b14f35; border-radius:3px;\">\n                          <a href=\"#\" style=\"display:inline-block; padding:17px 44px; font-family: Helvetica, Arial, sans-serif; font-size:13px; letter-spacing:2px; text-transform:uppercase; color:#ffffff; text-decoration:none; font-weight:bold;\">\n                            Shop the New Collection\n                          </a>\n                        </td>\n                      </tr>\n                    </table>\n                    <!--<![endif]-->\n                  </td>\n                </tr>\n              </table>\n\n              <!-- Divider -->\n              <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n                <tr>\n                  <td class=\"pa-px\" style=\"padding:26px 48px 6px 48px;\">\n                    <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n                      <tr><td style=\"border-top:1px solid #e6ddd0; font-size:0; line-height:0;\">&nbsp;</td></tr>\n                    </table>\n                  </td>\n                </tr>\n              </table>\n\n              <!-- Category showcase -->\n              <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n                <tr>\n                  <td align=\"center\" class=\"pa-px\" style=\"padding:24px 48px 4px 48px;\">\n                    <p style=\"margin:0; font-family: Helvetica, Arial, sans-serif; font-size:11px; letter-spacing:3px; text-transform:uppercase; color:#9a8f80;\">\n                      New for the Season\n                    </p>\n                  </td>\n                </tr>\n                <tr>\n                  <td class=\"pa-px\" style=\"padding:18px 40px 18px 40px;\">\n                    <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n                      <tr>\n                        <!-- Women -->\n                        <td class=\"pa-cat-cell\" valign=\"top\" width=\"33.33%\" align=\"center\" style=\"padding:0 8px;\">\n                          <a href=\"#\" style=\"text-decoration:none;\">\n                            <img class=\"pa-cat-img\" src=\"https://bloomreach.getbynder.com/asset/c822b07e-c862-4791-83ef-c8255f209678/online/women_menu2.png\" width=\"170\" alt=\"Shop Women's new arrivals\" style=\"display:block; width:100%; max-width:170px; height:auto; border:0; border-radius:3px;\">\n                          </a>\n                          <p style=\"margin:12px 0 0 0;\">\n                            <a href=\"#\" class=\"pa-cat-link\" style=\"font-family: Georgia, 'Times New Roman', Times, serif; font-size:15px; letter-spacing:1px; color:#2b2724; text-decoration:none;\">Women</a>\n                          </p>\n                        </td>\n                        <!-- Men -->\n                        <td class=\"pa-cat-cell\" valign=\"top\" width=\"33.33%\" align=\"center\" style=\"padding:0 8px;\">\n                          <a href=\"#\" style=\"text-decoration:none;\">\n                            <img class=\"pa-cat-img\" src=\"https://bloomreach.getbynder.com/asset/38b46c25-6f80-41d9-b404-619eb186b1dd/online/sweater2.png\" width=\"170\" alt=\"Shop Men's new arrivals\" style=\"display:block; width:100%; max-width:170px; height:auto; border:0; border-radius:3px;\">\n                          </a>\n                          <p style=\"margin:12px 0 0 0;\">\n                            <a href=\"#\" class=\"pa-cat-link\" style=\"font-family: Georgia, 'Times New Roman', Times, serif; font-size:15px; letter-spacing:1px; color:#2b2724; text-decoration:none;\">Men</a>\n                          </p>\n                        </td>\n                        <!-- Bags -->\n                        <td class=\"pa-cat-cell\" valign=\"top\" width=\"33.33%\" align=\"center\" style=\"padding:0 8px;\">\n                          <a href=\"#\" style=\"text-decoration:none;\">\n                            <img class=\"pa-cat-img\" src=\"https://pacific-demo-data.bloomreach.cloud/apparel/images/webp/gen_gptimage_1/bags/variants/110760_0_image.webp\" width=\"170\" alt=\"Shop Bags new arrivals\" style=\"display:block; width:100%; max-width:170px; height:auto; border:0; border-radius:3px;\">\n                          </a>\n                          <p style=\"margin:12px 0 0 0;\">\n                            <a href=\"#\" class=\"pa-cat-link\" style=\"font-family: Georgia, 'Times New Roman', Times, serif; font-size:15px; letter-spacing:1px; color:#2b2724; text-decoration:none;\">Bags</a>\n                          </p>\n                        </td>\n                      </tr>\n                    </table>\n                  </td>\n                </tr>\n\n                <!-- Bottom card padding -->\n                <tr><td style=\"padding:14px 0 30px 0;\">&nbsp;</td></tr>\n              </table>\n\n            </td>\n          </tr>\n\n          <!-- Footer -->\n          <tr>\n            <td class=\"pa-px\" style=\"padding:34px 48px 48px 48px;\">\n              <table role=\"presentation\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" border=\"0\">\n                <tr>\n                  <td align=\"center\" style=\"padding:0 0 16px 0;\">\n                    <a href=\"#\" class=\"pa-cat-link\" style=\"font-family: Helvetica, Arial, sans-serif; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#7a7066; text-decoration:none;\">Instagram</a>\n                    <span style=\"color:#cabfae;\">&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>\n                    <a href=\"#\" class=\"pa-cat-link\" style=\"font-family: Helvetica, Arial, sans-serif; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#7a7066; text-decoration:none;\">Pinterest</a>\n                    <span style=\"color:#cabfae;\">&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>\n                    <a href=\"#\" class=\"pa-cat-link\" style=\"font-family: Helvetica, Arial, sans-serif; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#7a7066; text-decoration:none;\">TikTok</a>\n                  </td>\n                </tr>\n                <tr>\n                  <td align=\"center\" style=\"padding:0 0 10px 0;\">\n                    <p style=\"margin:0; font-family: Helvetica, Arial, sans-serif; font-size:12px; line-height:20px; color:#9a8f80;\">\n                      &copy; 2026 Pacific Apparel. All rights reserved.\n                    </p>\n                  </td>\n                </tr>\n                <tr>\n                  <td align=\"center\" style=\"padding:0 0 14px 0;\">\n                    <p style=\"margin:0; font-family: Helvetica, Arial, sans-serif; font-size:12px; line-height:20px; color:#9a8f80;\">\n                      Pacific Apparel, 1200 Harbor Boulevard, Suite 300, San Francisco, CA 94111\n                    </p>\n                  </td>\n                </tr>\n                <tr>\n                  <td align=\"center\" style=\"padding:0;\">\n                    <p style=\"margin:0; font-family: Helvetica, Arial, sans-serif; font-size:12px; line-height:20px; color:#9a8f80;\">\n                      You&rsquo;re receiving this because you have a Pacific Apparel account.<br>\n                      <a href=\"#\" style=\"color:#7a7066; text-decoration:underline;\">Unsubscribe</a> &nbsp;&middot;&nbsp; <a href=\"#\" style=\"color:#7a7066; text-decoration:underline;\">Update preferences</a>\n                    </p>\n                  </td>\n                </tr>\n              </table>\n            </td>\n          </tr>\n\n        </table>\n        <!--[if mso]></td></tr></table><![endif]-->\n\n      </td>\n    </tr>\n  </table>\n\n</body>\n</html>\n",
+            "preheader": "Your {{ customer.discount_tier | default('20') }}% code {{ customer.offer_code | default('COMEBACK20') }} is waiting — plus free shipping over $99.",
+            "provider": {
+              "channel_extension_id": "6a1720ff1a26b57a6b5c97f6",
+              "type": "channel_extension"
+            },
+            "reply_to": null,
+            "sender_email": "danila.kossygin@rohlik.cz",
+            "sender_name": "Danila Kossygin",
+            "subject": "{{ customer.first_name | default('There') }}, we saved {{ customer.discount_tier | default('20') }}% off for you",
+            "translations": {}
+          },
+          "type": "raw"
+        },
+        "email_on_acid_test_id": null,
+        "frequency_policy": "unlimited-policy",
+        "general_consent": false,
+        "id": 3,
+        "name": "Unnamed email campaign",
+        "precedence_bulk": false,
+        "recipient_email": "",
+        "recipient_name": "",
+        "template_id": null,
+        "throughput_policy_id": null,
+        "transfer_identity": true,
+        "transfer_user_identity": "first_click",
+        "type": "send-email-action",
+        "unsubscribe_list": null,
+        "url_params": null,
+        "uses_2tnn": false,
+        "version": 1,
+        "x": 586,
+        "y": 586
+      },
+      {
+        "delay_seconds": 30,
+        "event": { "filter": [], "type": "orbit_winback_triggered" },
+        "id": 2,
+        "type": "on-event-trigger",
+        "version": 1,
+        "x": 352,
+        "y": 586
+      },
+      {
+        "name": "Unnamed segmentation",
+        "segmentation_id": null,
+        "segments": [],
+        "label": "Segmentation",
+        "type": "segmentation-fork",
+        "icon": "segmentations",
+        "disabledTooltip": "Can't add more Segmentation nodes. Reached limit of 5 Segmentation nodes per scenario.",
+        "x": 391,
+        "y": 716,
+        "id": 4
+      },
+      {
+        "type": "ab-split-contextual",
+        "variants": [
+          { "name": "Variant A", "id": 1, "reward": 1 },
+          { "name": "Variant B", "id": 2, "reward": 1 }
+        ],
+        "frozen": false,
+        "optimization_target": { "type": "click" },
+        "optimization_goals_events": [],
+        "periodicity": {
+          "type": "single",
+          "spread": { "count": 12, "units": "hours" }
+        },
+        "bandit_definition": {
+          "attributes": [],
+          "predefined_features": {
+            "browsing_history": true,
+            "campaign_history": true,
+            "purchase_history": true,
+            "campaign_timing_preferences": true,
+            "browsing_timing_preferences": true,
+            "last_session_behavior": true,
+            "other": true
+          },
+          "predefined": true
+        },
+        "traffic_distribution": {
+          "contextual_personalization": 100,
+          "control_group": 0,
+          "manual_ab_test": 0
+        },
+        "id": 6,
+        "name": "Unnamed Personalization",
+        "label": "Contextual Personalization",
+        "icon": "ab-split-contextual",
+        "x": 313,
+        "y": 833
+      },
+      {
+        "steps": [{ "limit": 1000, "group": null }],
+        "reset": null,
+        "name": "Unnamed limit",
+        "label": "Customer limit",
+        "type": "limit",
+        "icon": "limit",
+        "x": 157,
+        "y": 716,
+        "id": 7
+      },
+      {
+        "variants": [
+          { "name": "Variant A", "percentage": 33, "id": 1 },
+          { "name": "Variant B", "percentage": 33, "id": 2 },
+          { "name": "Control Group", "percentage": 34, "id": 3 }
+        ],
+        "touched": false,
+        "highest_variant_id_used": 3,
+        "name": "Unnamed A/B test",
+        "label": "A/B test",
+        "type": "ab-split",
+        "icon": "ab-split",
+        "tourId": "scenarioDesignTabAbSplitTile",
+        "x": 833,
+        "y": 677,
+        "id": 5
+      },
+      {
+        "name": "Unnamed condition",
+        "customer_filter": { "filters": [], "formula": "" },
+        "evaluate_jinja": false,
+        "label": "Condition",
+        "type": "condition",
+        "icon": "condition-alt",
+        "x": 781,
+        "y": 547,
+        "id": 8
+      },
+      {
+        "id": 9,
+        "x": 612,
+        "y": 755,
+        "type": "wait-action",
+        "count": 30,
+        "units": "days",
+        "count_template": "{{ 30 }}",
+        "optimize": { "type": "click" },
+        "label": "Wait",
+        "icon": "clock"
+      },
+      {
+        "repeat": "daily",
+        "times": [{ "hour": 0, "minute": 0 }],
+        "timezone": "Europe/Prague",
+        "from_date": null,
+        "to_date": null,
+        "label": "Repeat",
+        "type": "repeated-trigger",
+        "icon": "repeat",
+        "x": 274,
+        "y": 430,
+        "id": 10
+      },
+      {
+        "trigger_period": "annually",
+        "timezone": "Europe/Prague",
+        "times": [{ "hour": 0, "minute": 0 }],
+        "label": "On date attribute",
+        "type": "on-date-attribute-trigger",
+        "icon": "on-date-attribute",
+        "x": 170,
+        "y": 534,
+        "id": 11
+      }
+    ],
+    "connections": [
+      {
+        "destination": { "connector_index": 0, "node_id": 3 },
+        "source": { "connector_index": 0, "node_id": 2 }
+      }
+    ]
+  }
+}

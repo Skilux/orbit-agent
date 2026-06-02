@@ -1,0 +1,63 @@
+# Orbit — one-command bring-up.
+#
+#   cp .env.example .env   # fill in credentials
+#   docker compose up --build
+#   open http://localhost:8787
+#
+# Two services on a shared network:
+#   bloomreach-mcp  — custom MCP write-path into Bloomreach Engagement
+#   hermes-webui    — agent runtime + web UI (agent runs in-process)
+# Plus one remote MCP surface: Loomi (read-only, OAuth) via LOOMI_MCP_URL.
+
+services:
+  bloomreach-mcp:
+    build: ./mcp/bloomreach-engagement-mcp
+    env_file: .env
+    environment:
+      - MCP_HOST=0.0.0.0
+      - MCP_PORT=8000
+    ports:
+      - "8000:8000"
+    restart: unless-stopped
+    networks: [orbit]
+
+  hermes-webui:
+    build: ./hermes/ui
+    depends_on:
+      - bloomreach-mcp
+    env_file: .env
+    environment:
+      - HERMES_WEBUI_HOST=0.0.0.0
+      - HERMES_WEBUI_PORT=8787
+      - HERMES_WEBUI_STATE_DIR=/home/hermeswebui/.hermes/webui
+      - WANTED_UID=${UID:-1000}
+      - WANTED_GID=${GID:-1000}
+      # Override the .env localhost default: in-network the MCP is reached by
+      # its service name. (run-local.sh uses the localhost value from .env.)
+      - BLOOMREACH_MCP_URL=http://bloomreach-mcp:8000/mcp
+    ports:
+      - "127.0.0.1:8787:8787"
+    volumes:
+      # Hermes runtime home on a NAMED VOLUME (native ext4 in the Linux VM).
+      # This is required for the gateway's advisory lock (flock) to be
+      # enforced across processes — macOS bind-mounts (virtiofs) do NOT
+      # enforce flock cross-process, which makes the WebUI report the
+      # gateway as "not running" even when it is. docker_init seeds this
+      # volume from the read-only repo config below on boot.
+      - hermes_home:/home/hermeswebui/.hermes
+      # Repo config (profile, SOUL, Orbit skills, MCP registrations, token),
+      # mounted read-only as the seed source for the named volume.
+      - ./hermes/.hermes:/seed/hermes-home:ro
+      # Agent playbook mounted into the workspace
+      - ./agent:/workspace/agent
+    restart: unless-stopped
+    networks: [orbit]
+
+volumes:
+  hermes_home:
+
+networks:
+  orbit:
+    driver: bridge
+
+# Inside the network the agent reaches the MCP at http://bloomreach-mcp:8000

@@ -1,0 +1,82 @@
+# ─── Secrets — never commit ─────────────────────────────────────────
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+*.key
+**/secrets/
+**/auth.json
+**/mcp-tokens/
+
+# ─── Python ─────────────────────────────────────────────────────────
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+
+# ─── Node ───────────────────────────────────────────────────────────
+node_modules/
+
+# ─── Hermes: ship config only, ignore ALL runtime state ─────────────
+# The container bind-mounts hermes/.hermes read-write, so the agent writes
+# state.db, auth.json, sessions/, cache/, node/, gateway.pid, mcp-tokens/, …
+# back into this dir at runtime. Level-by-level whitelist (single '*' per
+# level so we can descend and re-include only the Orbit profile config).
+hermes/.hermes/*
+!hermes/.hermes/active_profile
+!hermes/.hermes/SOUL.md
+!hermes/.hermes/hooks
+!hermes/.hermes/profiles
+hermes/.hermes/profiles/*
+!hermes/.hermes/profiles/orbit
+hermes/.hermes/profiles/orbit/*
+!hermes/.hermes/profiles/orbit/config.yaml
+!hermes/.hermes/profiles/orbit/profile.yaml
+!hermes/.hermes/profiles/orbit/SOUL.md
+!hermes/.hermes/profiles/orbit/hooks
+# Ship the profile's skills dir, then drop the generic Hermes catalog that
+# re-seeds at runtime (keeping only Orbit's 8 authored skills).
+!hermes/.hermes/profiles/orbit/skills
+hermes/.hermes/profiles/orbit/skills/.bundled_manifest
+hermes/.hermes/profiles/orbit/skills/.curator_state
+hermes/.hermes/profiles/orbit/skills/.curator_backups/
+hermes/.hermes/profiles/orbit/skills/.hub/
+hermes/.hermes/profiles/orbit/skills/.usage.json
+hermes/.hermes/profiles/orbit/skills/.usage.json.lock
+hermes/.hermes/profiles/orbit/skills/apple/
+hermes/.hermes/profiles/orbit/skills/autonomous-ai-agents/
+hermes/.hermes/profiles/orbit/skills/creative/
+hermes/.hermes/profiles/orbit/skills/data-science/
+hermes/.hermes/profiles/orbit/skills/diagramming/
+hermes/.hermes/profiles/orbit/skills/domain/
+hermes/.hermes/profiles/orbit/skills/email/
+hermes/.hermes/profiles/orbit/skills/gaming/
+hermes/.hermes/profiles/orbit/skills/gifs/
+hermes/.hermes/profiles/orbit/skills/github/
+hermes/.hermes/profiles/orbit/skills/inference-sh/
+hermes/.hermes/profiles/orbit/skills/mcp/
+hermes/.hermes/profiles/orbit/skills/media/
+hermes/.hermes/profiles/orbit/skills/mlops/
+hermes/.hermes/profiles/orbit/skills/note-taking/
+hermes/.hermes/profiles/orbit/skills/productivity/
+hermes/.hermes/profiles/orbit/skills/research/
+hermes/.hermes/profiles/orbit/skills/smart-home/
+hermes/.hermes/profiles/orbit/skills/social-media/
+
+# ─── Legacy live runtime (old Hermes working dir) ───────────────────
+# Excluded from the repo. Safe to delete once the running gateway is stopped.
+# Anchored to repo root so it does NOT match hermes/.hermes/profiles/orbit/.
+/orbit/
+
+# ─── Reversible cleanup trash (not part of the repo) ────────────────
+.trash/
+.demo-stash/
+
+# ─── Personal: internal notes, progress logs, raw footage (never shipped)
+/personal/
+
+# ─── OS ─────────────────────────────────────────────────────────────
+.DS_Store

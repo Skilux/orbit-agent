@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
+<!--
+  ============================================================================
+  ORBIT WIN-BACK SHELL  ·  Pacific Apparel  ·  Bloomreach Engagement
+  ============================================================================
+  This is a FIXED brand template. The AI agent does NOT edit this HTML.
+  It only WRITES the customer properties below; this template renders them.
+
+  AGENT-FILLABLE PLACEHOLDERS (the agent must write these customer properties):
+    customer.email_headline  – AGENT-AUTHORED hero headline. Short, 1 line.
+                               default: "We saved your spot"
+    customer.email_body      – AGENT-AUTHORED body copy. Renders with | safe,
+                               so light inline HTML (e.g. <strong>, <br>) is OK.
+                               default: "It has been a while — here is a little
+                               something to welcome you back."
+
+  STRUCTURED VALUES (set by agent/scenario, not free-form copy):
+    customer.first_name      – greeting name.            default: "there"
+    customer.offer_code      – discount code in code box. default: "COMEBACK20"
+    customer.discount_tier   – percent number, shown "% OFF". default: "20"
+
+  Everything else (wordmark, hero image, offer block, CTA, category tiles,
+  footer) is fixed brand chrome and must not be changed per campaign.
+  ============================================================================
+-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="x-apple-disable-message-reformatting">
+  <meta name="color-scheme" content="light">
+  <meta name="supported-color-schemes" content="light">
+  <title>We've missed you at Pacific Apparel</title>
+  <!--[if mso]>
+  <noscript>
+    <xml>
+      <o:OfficeDocumentSettings>
+        <o:PixelsPerInch>96</o:PixelsPerInch>
+      </o:OfficeDocumentSettings>
+    </xml>
+  </noscript>
+  <![endif]-->
+  <!-- Progressive-enhancement styles only. Base layout works from inline styles alone. -->
+  <style>
+    body { margin: 0; padding: 0; width: 100% !important; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+    table { border-collapse: collapse !important; }
+    img { border: 0; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; }
+    a { text-decoration: none; }
+    .pa-hover-cta:hover { background-color: #8a3f2b !important; }
+    .pa-cat-link:hover { color: #b14f35 !important; }
+    @media only screen and (max-width: 600px) {
+      .pa-container { width: 100% !important; }
+      .pa-px { padding-left: 28px !important; padding-right: 28px !important; }
+      .pa-h1 { font-size: 30px !important; line-height: 38px !important; }
+      .pa-offer-num { font-size: 52px !important; line-height: 52px !important; }
+      .pa-stack { display: block !important; width: 100% !important; }
+      .pa-cat-cell { display: block !important; width: 100% !important; padding: 0 0 24px 0 !important; }
+      .pa-cat-img { width: 100% !important; height: auto !important; }
+      .pa-hide-sm { display: none !important; }
+    }
+  </style>
+</head>
+<body style="margin:0; padding:0; background-color:#f3ede4; color:#2b2724; font-family: Helvetica, Arial, sans-serif;">
+
+  <!-- Preheader (hidden preview text) -->
+  <div style="display:none; font-size:1px; line-height:1px; max-height:0; max-width:0; opacity:0; overflow:hidden; mso-hide:all; color:#f3ede4;">
+    We saved your spot &mdash; {{ customer.discount_tier | default('20') }}% off inside.
+    &nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;
+  </div>
+
+  <!-- Fluid outer wrapper -->
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f3ede4;">
+    <tr>
+      <td align="center" style="padding:0;">
+
+        <!--[if mso]><table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0"><tr><td><![endif]-->
+        <table role="presentation" class="pa-container" width="600" cellpadding="0" cellspacing="0" border="0" align="center" style="width:600px; max-width:600px; margin:0 auto;">
+
+          <!-- Top spacer + eyebrow -->
+          <tr>
+            <td align="center" class="pa-px" style="padding:28px 48px 0 48px;">
+              <p style="margin:0; font-family: Helvetica, Arial, sans-serif; font-size:11px; letter-spacing:3px; text-transform:uppercase; color:#9a8f80;">
+                Spring 2026 Collection
+              </p>
+            </td>
+          </tr>
+
+          <!-- Header / wordmark -->
+          <tr>
+            <td align="center" class="pa-px" style="padding:14px 48px 22px 48px; border-bottom:1px solid #e0d6c8;">
+              <a href="#" style="text-decoration:none;">
+                <span style="font-family: Georgia, 'Times New Roman', Times, serif; font-size:26px; letter-spacing:5px; color:#2b2724; text-transform:uppercase; font-weight:normal;">Pacific</span>
+                <span style="font-family: Georgia, 'Times New Roman', Times, serif; font-size:26px; letter-spacing:5px; color:#b14f35; text-transform:uppercase; font-weight:normal;">&nbsp;Apparel</span>
+              </a>
+            </td>
+          </tr>
+
+          <!-- White content card -->
+          <tr>
+            <td style="padding:0; background-color:#fbf8f3;">
+
+              <!-- Hero image -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td style="padding:0; font-size:0; line-height:0;">
+                    <img src="https://bloomreach.getbynder.com/asset/07a9364a-0d8b-42b0-857b-19a740daaf01/large/apparel_banner-webp.jpg" width="600" alt="Model wearing pieces from the Pacific Apparel Spring 2026 collection" style="display:block; width:100%; max-width:600px; height:auto; border:0;">
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Hero copy -->
+              <!-- AGENT COPY ZONE: headline + body are the only per-campaign text. -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td class="pa-px" style="padding:40px 48px 8px 48px;">
+                    <p style="margin:0 0 14px 0; font-family: Helvetica, Arial, sans-serif; font-size:11px; letter-spacing:3px; text-transform:uppercase; color:#b14f35;">
+                      Modern Elegance
+                    </p>
+                    <h1 class="pa-h1" style="margin:0 0 18px 0; font-family: Georgia, 'Times New Roman', Times, serif; font-weight:normal; font-size:38px; line-height:46px; color:#2b2724;">
+                      {{ customer.email_headline | default('We saved your spot') }}
+                    </h1>
+                    <p style="margin:0; font-family: Georgia, 'Times New Roman', Times, serif; font-size:17px; line-height:28px; color:#5a5249;">
+                      {{ customer.email_body | default('It has been a while — here is a little something to welcome you back.') | safe }}
+                    </p>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Offer block -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td class="pa-px" style="padding:34px 48px 6px 48px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#2b2724; border-radius:4px;">
+                      <tr>
+                        <td align="center" style="padding:38px 32px 34px 32px;">
+                          <p style="margin:0 0 6px 0; font-family: Helvetica, Arial, sans-serif; font-size:11px; letter-spacing:3px; text-transform:uppercase; color:#c9a892;">
+                            A welcome-back gift
+                          </p>
+                          <p class="pa-offer-num" style="margin:0; font-family: Georgia, 'Times New Roman', Times, serif; font-size:64px; line-height:64px; color:#ffffff; font-weight:normal;">
+                            {{ customer.discount_tier | default('20') }}% OFF
+                          </p>
+                          <p style="margin:6px 0 26px 0; font-family: Helvetica, Arial, sans-serif; font-size:14px; letter-spacing:2px; text-transform:uppercase; color:#e7dccf;">
+                            Your Next Order
+                          </p>
+
+                          <!-- Code box (dashed/bordered) -->
+                          <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;">
+                            <tr>
+                              <td align="center" style="border:2px dashed #c9a892; border-radius:4px; padding:14px 30px; background-color:#332e2a;">
+                                <span style="font-family: Helvetica, Arial, sans-serif; font-size:10px; letter-spacing:2px; text-transform:uppercase; color:#c9a892;">Use code</span><br>
+                                <span style="font-family: Georgia, 'Times New Roman', Times, serif; font-size:24px; letter-spacing:5px; color:#ffffff;">{{ customer.offer_code | default('COMEBACK20') }}</span>
+                              </td>
+                            </tr>
+                          </table>
+
+                          <p style="margin:22px 0 0 0; font-family: Helvetica, Arial, sans-serif; font-size:12px; line-height:18px; color:#a99b8b;">
+                            Plus free shipping on orders over $99.
+                          </p>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- CTA button (bulletproof) -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td align="center" class="pa-px" style="padding:30px 48px 12px 48px;">
+                    <!--[if mso]>
+                    <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml" xmlns:w="urn:schemas-microsoft-com:office:word" href="#" style="height:54px;v-text-anchor:middle;width:300px;" arcsize="6%" strokecolor="#b14f35" fillcolor="#b14f35">
+                      <w:anchorlock/>
+                      <center style="color:#ffffff;font-family:Helvetica,Arial,sans-serif;font-size:13px;letter-spacing:2px;font-weight:bold;">SHOP THE NEW COLLECTION</center>
+                    </v:roundrect>
+                    <![endif]-->
+                    <!--[if !mso]><!-- -->
+                    <table role="presentation" cellpadding="0" cellspacing="0" border="0" align="center" style="margin:0 auto;">
+                      <tr>
+                        <td class="pa-hover-cta" align="center" bgcolor="#b14f35" style="background-color:#b14f35; border-radius:3px;">
+                          <a href="#" style="display:inline-block; padding:17px 44px; font-family: Helvetica, Arial, sans-serif; font-size:13px; letter-spacing:2px; text-transform:uppercase; color:#ffffff; text-decoration:none; font-weight:bold;">
+                            Shop the New Collection
+                          </a>
+                        </td>
+                      </tr>
+                    </table>
+                    <!--<![endif]-->
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Divider -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td class="pa-px" style="padding:26px 48px 6px 48px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                      <tr><td style="border-top:1px solid #e6ddd0; font-size:0; line-height:0;">&nbsp;</td></tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Category showcase -->
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td align="center" class="pa-px" style="padding:24px 48px 4px 48px;">
+                    <p style="margin:0; font-family: Helvetica, Arial, sans-serif; font-size:11px; letter-spacing:3px; text-transform:uppercase; color:#9a8f80;">
+                      New for the Season
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <td class="pa-px" style="padding:18px 40px 18px 40px;">
+                    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                      <tr>
+                        <!-- Women -->
+                        <td class="pa-cat-cell" valign="top" width="33.33%" align="center" style="padding:0 8px;">
+                          <a href="#" style="text-decoration:none;">
+                            <img class="pa-cat-img" src="https://bloomreach.getbynder.com/asset/c822b07e-c862-4791-83ef-c8255f209678/online/women_menu2.png" width="170" alt="Shop Women's new arrivals" style="display:block; width:100%; max-width:170px; height:auto; border:0; border-radius:3px;">
+                          </a>
+                          <p style="margin:12px 0 0 0;">
+                            <a href="#" class="pa-cat-link" style="font-family: Georgia, 'Times New Roman', Times, serif; font-size:15px; letter-spacing:1px; color:#2b2724; text-decoration:none;">Women</a>
+                          </p>
+                        </td>
+                        <!-- Men -->
+                        <td class="pa-cat-cell" valign="top" width="33.33%" align="center" style="padding:0 8px;">
+                          <a href="#" style="text-decoration:none;">
+                            <img class="pa-cat-img" src="https://bloomreach.getbynder.com/asset/38b46c25-6f80-41d9-b404-619eb186b1dd/online/sweater2.png" width="170" alt="Shop Men's new arrivals" style="display:block; width:100%; max-width:170px; height:auto; border:0; border-radius:3px;">
+                          </a>
+                          <p style="margin:12px 0 0 0;">
+                            <a href="#" class="pa-cat-link" style="font-family: Georgia, 'Times New Roman', Times, serif; font-size:15px; letter-spacing:1px; color:#2b2724; text-decoration:none;">Men</a>
+                          </p>
+                        </td>
+                        <!-- Bags -->
+                        <td class="pa-cat-cell" valign="top" width="33.33%" align="center" style="padding:0 8px;">
+                          <a href="#" style="text-decoration:none;">
+                            <img class="pa-cat-img" src="https://pacific-demo-data.bloomreach.cloud/apparel/images/webp/gen_gptimage_1/bags/variants/110760_0_image.webp" width="170" alt="Shop Bags new arrivals" style="display:block; width:100%; max-width:170px; height:auto; border:0; border-radius:3px;">
+                          </a>
+                          <p style="margin:12px 0 0 0;">
+                            <a href="#" class="pa-cat-link" style="font-family: Georgia, 'Times New Roman', Times, serif; font-size:15px; letter-spacing:1px; color:#2b2724; text-decoration:none;">Bags</a>
+                          </p>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+
+                <!-- Bottom card padding -->
+                <tr><td style="padding:14px 0 30px 0;">&nbsp;</td></tr>
+              </table>
+
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td class="pa-px" style="padding:34px 48px 48px 48px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+                <tr>
+                  <td align="center" style="padding:0 0 16px 0;">
+                    <a href="#" class="pa-cat-link" style="font-family: Helvetica, Arial, sans-serif; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#7a7066; text-decoration:none;">Instagram</a>
+                    <span style="color:#cabfae;">&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>
+                    <a href="#" class="pa-cat-link" style="font-family: Helvetica, Arial, sans-serif; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#7a7066; text-decoration:none;">Pinterest</a>
+                    <span style="color:#cabfae;">&nbsp;&nbsp;&middot;&nbsp;&nbsp;</span>
+                    <a href="#" class="pa-cat-link" style="font-family: Helvetica, Arial, sans-serif; font-size:11px; letter-spacing:2px; text-transform:uppercase; color:#7a7066; text-decoration:none;">TikTok</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center" style="padding:0 0 10px 0;">
+                    <p style="margin:0; font-family: Helvetica, Arial, sans-serif; font-size:12px; line-height:20px; color:#9a8f80;">
+                      &copy; 2026 Pacific Apparel. All rights reserved.
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center" style="padding:0 0 14px 0;">
+                    <p style="margin:0; font-family: Helvetica, Arial, sans-serif; font-size:12px; line-height:20px; color:#9a8f80;">
+                      Pacific Apparel, 1200 Harbor Boulevard, Suite 300, San Francisco, CA 94111
+                    </p>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center" style="padding:0;">
+                    <p style="margin:0; font-family: Helvetica, Arial, sans-serif; font-size:12px; line-height:20px; color:#9a8f80;">
+                      You&rsquo;re receiving this because you have a Pacific Apparel account.<br>
+                      <a href="#" style="color:#7a7066; text-decoration:underline;">Unsubscribe</a> &nbsp;&middot;&nbsp; <a href="#" style="color:#7a7066; text-decoration:underline;">Update preferences</a>
+                    </p>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+        </table>
+        <!--[if mso]></td></tr></table><![endif]-->
+
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>

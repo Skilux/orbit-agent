@@ -1,0 +1,4 @@
+description: 'Orbit: closed-loop campaign agent (single profile). Discovers via Loomi
+  read-only EQL, authors brief+copy, STOPS for human approval, then ships via bloomreach
+  write-MCP and verifies.'
+description_auto: false

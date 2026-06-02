@@ -1,0 +1,10 @@
+# Hermes Web UI -- minimal Python dependencies
+# The server uses PyYAML plus cryptography for optional local passkey/WebAuthn support.
+pyyaml>=6.0
+cryptography>=42.0
+
+# Orbit: install the Hermes agent runtime into the WebUI venv so the agent loop,
+# CLI (`python -m hermes_cli.main`), gateway/cron, and MCP client are available
+# in-container without mounting the 1.6GB host source. `cron` is a core dep;
+# `[mcp]` adds the MCP client used by the loomi + bloomreach surfaces.
+hermes-agent[mcp]==0.15.2

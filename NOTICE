@@ -1,0 +1,37 @@
+Orbit — attribution & provenance
+=================================
+
+Orbit is a hackathon project for the Loomi Connect AI Hackathon (Bloomreach).
+It composes two third-party components, vendored into this repo (their original
+git history was stripped to keep the repo small and to avoid carrying upstream
+secrets). Credit and licensing below.
+
+1. hermes/ui/ — Hermes Web UI
+   The agent runtime + web UI harness.
+   Upstream: https://github.com/nesquena/hermes-webui
+   License:  MIT (see hermes/ui/LICENSE)
+   Changes:  upstream docs/tests/changelog trimmed; configured for Orbit via
+             hermes/.hermes/ (profile, SOUL, Orbit skills, MCP registrations).
+
+2. mcp/bloomreach-engagement-mcp/ — custom Bloomreach Engagement MCP server
+   The write-path MCP wrapping the Bloomreach Engagement API (FastMCP/httpx).
+   Upstream: https://github.com/Skilux/bloomreach-engagement-mcp
+   License:  see upstream repository.
+
+What is original to this project (Orbit team's work)
+----------------------------------------------------
+- docs/submission/              — hackathon deliverables (summary, architecture,
+                                  MCP usage, responsible-AI note, demo script)
+- docs/reference/               — supporting docs: scenarios, BR API, MCP mapping
+- demo/                         — the interactive demo one-pager (HTML + clips
+                                  + voiceover audio)
+- agent/                        — the agent's playbook: prompts, skills,
+                                  scenario definitions, campaign templates
+- hermes/.hermes/profiles/orbit — the Orbit agent profile, SOUL, and the
+                                  closed-loop orchestration across MCP surfaces
+- docker-compose.yml, README    — packaging and one-command bring-up
+
+Third MCP surface
+-----------------
+Loomi MCP (read-only, OAuth) is consumed as a remote service, not vendored:
+https://loomi-mcp-alpha.bloomreach.com/mcp
