@@ -1,14 +1,11 @@
 # Team Details
 
-> **⚠️ FILL THIS IN before submitting** — these are placeholders.
-
-- **Team name:** _<fill in>_
+- **Team name:** Rohlik team
 - **Track:** 6 — Cross-MCP Orchestration
-- **Team lead:** _<fill in>_
+- **Team lead:** Danila Kossygin
 
 | Member | Role | Email | Slack handle |
 |---|---|---|---|
-| _<your name>_ | _<e.g. Builder / PM>_ | danila.kossygin@rohlik.cz | _<fill in>_ |
-| _<teammate, if any>_ | | | |
+| Danila Kossygin | Builder + PM | danila.kossygin@rohlik.cz | Danila Kossygin - Rohlik |
 
-_(Assumed solo unless you add teammates above.)_
+_Solo project._

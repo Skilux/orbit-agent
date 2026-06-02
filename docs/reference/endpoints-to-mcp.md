@@ -121,7 +121,7 @@ Lives in `seed.ts`, not the MCP server.
 
 ---
 
-## Tools once proposed (2) — NOT BUILT / deferred — see `agentic-design.md` / `scope.md`
+## Tools once proposed (2) — NOT BUILT / deferred — see `scenarios.md` (Appendix C)
 
 **Decision (2026-05-31):** neither tool below is built. They are **replaced** by (a) **saved EQL queries** the Planner runs for cohort sizing + results, and (b) the demo **targeting a single known recipient** (so no count→members export is needed). The 4 tools above are the complete v1 custom MCP. Kept here for context / future scope only.
 

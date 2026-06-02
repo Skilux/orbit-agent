@@ -83,7 +83,7 @@ Invent freely: `event.type`, all copy (`subject`/`preheader`/`jinja_html`), `sen
   "subject": "<jinja subject>",
   "preheader": "<jinja preheader>",
   "jinja_html": "<FULL email HTML — use templates/winback-shell.html so {{customer.email_headline}}/{{email_body}} render>",
-  "sender_email": "danila.kossygin@rohlik.cz",
+  "sender_email": "orbit-seed-1@rohlik.cz",
   "sender_name": "Pacific Apparel",
   "provider": { "type": "channel_extension", "channel_extension_id": "6a1720ff1a26b57a6b5c97f6" },
   "reply_to": null, "file_ids": [], "translations": {}
@@ -108,7 +108,7 @@ Top-level email node also needs: `"type":"send-email-action"`, `"consent_categor
  "nodes":[
   {"id":1,"type":"on-event-trigger","version":1,"delay_seconds":0,"event":{"type":"orbit_winback_triggered","filter":[]},"x":300,"y":300},
   {"id":2,"type":"send-email-action","version":1,"consent_category":"other","frequency_policy":"unlimited-policy","transfer_identity":true,"recipient_email":"","recipient_name":"",
-   "design":{"type":"raw","data":{"subject":"…","preheader":"…","jinja_html":"<…shell…>","sender_email":"danila.kossygin@rohlik.cz","sender_name":"Pacific Apparel","provider":{"type":"channel_extension","channel_extension_id":"6a1720ff1a26b57a6b5c97f6"},"file_ids":[],"translations":{}}},
+   "design":{"type":"raw","data":{"subject":"…","preheader":"…","jinja_html":"<…shell…>","sender_email":"orbit-seed-1@rohlik.cz","sender_name":"Pacific Apparel","provider":{"type":"channel_extension","channel_extension_id":"6a1720ff1a26b57a6b5c97f6"},"file_ids":[],"translations":{}}},
    "x":520,"y":300}
  ],
  "connections":[{"source":{"node_id":1,"connector_index":0},"destination":{"node_id":2,"connector_index":0}}]
@@ -127,7 +127,7 @@ Wire: trigger→condition; condition branch1→emailA; condition branch2→wait;
 ]
 ```
 (node 1 = trigger, 2 = condition, 3 = email on branch 1, 4 = wait, 5 = email after wait)
-Reference: `scenarios/generated/orbit_cartrecovery.json` is a real working branched export — copy its connector indices.
+Reference: `scenarios/generated/orbit_cartrecovery.json` is a real verified branched export (trigger→email→wait→condition→follow-up email) — copy its connector indices. Flow wiring confirmed: trigger out 0, email out 1, wait out 1, condition out 2 (NO branch) → follow-up email.
 
 ---
 

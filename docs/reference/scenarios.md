@@ -2,7 +2,7 @@
 
 **Single source of truth** for *what the agent does* and *what data/tools it touches*. Merges the former `DEMO-SCENARIOS.md`, `USE-CASES.md`, `agentic-design.md`, and `orbit-idea.md`.
 
-Companions: `PRD.md` (master spec) · `winback-scenario.md` (operational runbook) · `endpoints-to-mcp.md` (tool wrapping spec) · `BUILD-STEPS.md` (execution plan).
+Companion: [`endpoints-to-mcp.md`](endpoints-to-mcp.md) (tool-wrapping spec). The detailed master spec, win-back runbook, and build log are kept as internal planning and are not shipped with the public repo.
 
 ---
 

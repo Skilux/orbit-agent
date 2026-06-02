@@ -64,6 +64,10 @@ possible channels**.
 
 ## Quickstart
 
+> First time here? **[`docs/SETUP.md`](docs/SETUP.md)** has the full install,
+> credentials, and LLM-config walkthrough; **[`docs/USAGE.md`](docs/USAGE.md)**
+> covers driving the loop and troubleshooting.
+
 ```bash
 cp .env.example .env        # fill in credentials (see notes below)
 docker compose up --build   # boots bloomreach-mcp + hermes-webui
@@ -75,8 +79,9 @@ One command brings up **two containers**:
 - **`hermes-webui`** (`:8787`) — Hermes Agent **+** UI in a single container (the agent runs in-process).
 - **`bloomreach-mcp`** (`:8000`) — the custom MCP server (Python).
 
-> **LLM endpoint:** set `OPENAI_API_KEY` / `OPENAI_BASE_URL`
-> to any provider you have access to. Or you can connect any LLM model or provider via "hermes model"
+> **LLM endpoint:** set `OPENAI_API_KEY` / `OPENAI_BASE_URL` / `OPENAI_MODEL`
+> to any OpenAI-compatible provider you have access to. Or reconfigure
+> interactively with `hermes model`. See **[`docs/SETUP.md`](docs/SETUP.md)**.
 
 ### Run locally (no Docker)
 
@@ -99,6 +104,8 @@ URL — `BLOOMREACH_MCP_URL` — which each mode sets automatically.)
 
 | Path | What it is |
 | --- | --- |
+| [`docs/SETUP.md`](docs/SETUP.md) | Install, LLM config, standalone MCP, env-var reference. |
+| [`docs/USAGE.md`](docs/USAGE.md) | Driving the loop, simulated-vs-live, FAQ / troubleshooting. |
 | `docs/submission/` | Hackathon deliverables — project summary, architecture, MCP usage, responsible-AI note, demo script. |
 | `docs/reference/` | Supporting docs — [`scenarios.md`](docs/reference/scenarios.md) (use cases, demo modes, full Loomi tool inventory), Bloomreach API, endpoint→MCP mapping. |
 | `demo/` | Interactive demo one-pager (HTML) + screen-capture clips + voiceover audio. |

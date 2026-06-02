@@ -80,3 +80,6 @@ hermes/.hermes/profiles/orbit/skills/social-media/
 
 # ─── OS ─────────────────────────────────────────────────────────────
 .DS_Store
+
+# ─── Local editor / Claude Code config ──────────────────────────────
+.claude/

@@ -23,7 +23,7 @@
               "type": "channel_extension"
             },
             "reply_to": null,
-            "sender_email": "danila.kossygin@rohlik.cz",
+            "sender_email": "orbit-seed-1@rohlik.cz",
             "sender_name": "Danila Kossygin",
             "subject": "{{ customer.first_name | default('There') }}, we saved {{ customer.discount_tier | default('20') }}% off for you",
             "translations": {}

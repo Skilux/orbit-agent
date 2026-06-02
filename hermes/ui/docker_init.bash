@@ -462,6 +462,28 @@ if [ -d /seed/hermes-home ]; then
   echo ""; echo "== Seeding Hermes home from /seed/hermes-home"
   cp -a /seed/hermes-home/. /home/hermeswebui/.hermes/ 2>/dev/null || \
     echo "!! WARNING: seed copy had non-fatal errors (continuing)"
+
+  # Orbit: resolve ${VAR} placeholders in the seeded profile config from the
+  # container env. The WebUI's chat path does NOT expand env vars in the model
+  # provider config (base_url/api_key) the way the CLI does — so a literal
+  # "${OPENAI_BASE_URL}" reaches the LLM client and the agent fails with
+  # "Connection error". We keep the repo config as ${VAR} (no secret committed)
+  # and bake the real values into the volume copy here, at boot.
+  echo "-- Resolving model/MCP env placeholders in profile config"
+  _orbit_cfg=/home/hermeswebui/.hermes/profiles/orbit/config.yaml
+  if [ -f "$_orbit_cfg" ]; then
+    python3 - "$_orbit_cfg" <<'PYEOF' || echo "!! WARNING: config placeholder resolution failed (continuing)"
+import os, sys
+p = sys.argv[1]
+s = open(p).read()
+for k in ("OPENAI_MODEL", "OPENAI_BASE_URL", "OPENAI_API_KEY", "BLOOMREACH_MCP_URL", "LOOMI_MCP_URL"):
+    v = os.environ.get(k)
+    if v:
+        s = s.replace("${" + k + "}", v)
+open(p, "w").write(s)
+print("   resolved:", ", ".join(k for k in ("OPENAI_MODEL","OPENAI_BASE_URL","OPENAI_API_KEY","BLOOMREACH_MCP_URL","LOOMI_MCP_URL") if os.environ.get(k)))
+PYEOF
+  fi
 fi
 
 # Orbit: start the Hermes gateway (cron scheduler) in the background so

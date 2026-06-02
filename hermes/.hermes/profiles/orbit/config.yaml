@@ -67,7 +67,7 @@ agent:
 terminal:
   backend: local
   modal_mode: auto
-  cwd: /Users/danila/Desktop/harness
+  cwd: .
   timeout: 180
   env_passthrough: []
   shell_init_files: []
@@ -569,7 +569,7 @@ custom_providers: []
 OPENAI_BASE_URL: ${OPENAI_BASE_URL}
 mcp_servers:
   loomi:
-    url: https://loomi-mcp-alpha.bloomreach.com/mcp
+    url: ${LOOMI_MCP_URL}
     auth: oauth
     enabled: true
     tools:
