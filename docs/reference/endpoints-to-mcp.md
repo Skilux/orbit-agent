@@ -102,8 +102,8 @@ Confirms property writes materialized; clean "see, the offer is set" demo beat. 
 
 ```json
 {"commands":[
-  {"name":"customers","data":{"customer_ids":{"registered":"orbit-seed-1@rohlik.cz"},"properties":{"first_name":"Seed","last_purchase_days":45}}},
-  {"name":"customers/events","data":{"customer_ids":{"registered":"orbit-seed-1@rohlik.cz"},"event_type":"purchase","properties":{"total_price":42.5}}}
+  {"name":"customers","data":{"customer_ids":{"registered":"orbit-seed-1@email.com"},"properties":{"first_name":"Seed","last_purchase_days":45}}},
+  {"name":"customers/events","data":{"customer_ids":{"registered":"orbit-seed-1@email.com"},"event_type":"purchase","properties":{"total_price":42.5}}}
 ]}
 ```
 Lives in `seed.ts`, not the MCP server.

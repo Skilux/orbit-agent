@@ -40,7 +40,7 @@
 - [ ] Re-mint the Loomi OAuth token **< 1 hour** before recording (it's the read path; if it's expired the discovery beat dies). One-time browser login.
 
 ### C. Recipient is seeded (for the real send, Prompt 2)
-- [ ] `orbit-seed-1@rohlik.cz` exists in the sandbox **with email consent** and is **not suppressed**. (Already done + verified `delivered`/`opened` in rehearsal — just re-confirm it didn't get suppressed since.)
+- [ ] `orbit-seed-1@email.com` exists in the sandbox **with email consent** and is **not suppressed**. (Already done + verified `delivered`/`opened` in rehearsal — just re-confirm it didn't get suppressed since.)
 
 ### D. Stage the workspace so authoring is *honest* (Prompt 3)  ⚠️ important
 The agent must build cart-recovery **from the win-back example**, not copy a prebuilt cart-recovery file. Before recording, move the pre-existing cart-recovery / other generated artifacts out of the agent's reach:
@@ -116,7 +116,7 @@ Run Prompts 1→2→3 start to finish once. Confirm: Loomi cards appear, the sen
 ### Beat 5 · Slide 6 — OPERATE (thin write-MCP, real send)  → records **`clip-operate.mp4`**
 - **Show:** zoom the **4 write-MCP cards** in sequence; show the `read_customer_events` result.
 - **Type — Prompt 2 (approve + send):**
-  > Approved — run the win-back. Ship it to orbit-seed-1@rohlik.cz.
+  > Approved — run the win-back. Ship it to orbit-seed-1@email.com.
 - **Say:**
   > "Approved. Now — and only now — Orbit touches the write side through that thin Engagement MCP: it sets the personalization, **verifies** it landed, fires the win-back scenario, and reads the result straight back — **delivered, and opened.** A real campaign, from a plain-language goal, with a human in the middle."
 - **Expect (verified 2026-06-02):** `set_customer_property` → `read_customer_attributes` (verify) → `trigger_scenario` (`orbit_winback_triggered`) → `read_customer_events` → campaign event **`enqueued` then `opened`**. No `suppressed`/error. *(Timing wrinkle: the new send's delivery event may not surface in the ~90s read window, so the agent reports the most-recent visible `enqueued/opened` pair — its timestamp can lag the moment you hit send. Harmless; the proof is the clean status.)*
@@ -144,7 +144,7 @@ Run Prompts 1→2→3 start to finish once. Confirm: Loomi cards appear, the sen
 
 ## Prompts (copy-paste) — 3 prompts, one continuous chat
 1. **(diagnose → brief)** *I run marketing for our store. We keep acquiring customers but revenue is flat and I don't know why. Dig into our data and find the root cause. When you measure the lapsed segment, define it once as: customers who purchased exactly once ever AND have not purchased in the last 60 days — use that exact definition consistently everywhere. Give me the root cause, the size and dollar value of the opportunity, and then go straight to a full campaign brief — RFM tier, offer, and the authored email copy — ready for my approval. Do not send anything.*
-2. **(approve + send)** *Approved — run the win-back. Ship it to orbit-seed-1@rohlik.cz.*
+2. **(approve + send)** *Approved — run the win-back. Ship it to orbit-seed-1@email.com.*
 3. **(hero — author from scratch)** *We've got nothing for abandoned carts — that whole revenue stream is leaking. Look at our existing win-back scenario as a reference for the format, then build me a complete cart-recovery campaign from scratch: work out the audience, design the email, and author the full multi-step scenario — send, wait two days, follow up if they haven't opened — plus a preview-ready HTML I can open. I want to import it straight into Bloomreach.*
 4. *(only if time)* *How is the win-back performing? If it's underperforming, propose the next iteration.*
 

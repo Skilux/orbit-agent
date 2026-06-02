@@ -6,6 +6,6 @@
 
 | Member | Role | Email | Slack handle |
 |---|---|---|---|
-| Danila Kossygin | Builder + PM | danila.kossygin@rohlik.cz | Danila Kossygin - Rohlik |
+| Danila Kossygin | Builder + PM | danila.kossygin@email.com | Danila Kossygin - Rohlik |
 
 _Solo project._

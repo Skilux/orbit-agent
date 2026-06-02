@@ -27,7 +27,7 @@ Credentials live in `.env` (git-ignored). Shape in `.env.example`.
 ```bash
 curl -sS -X POST "$BR_BASE/track/v2/projects/$BR_PROJECT/customers" \
   -u "$BR_KEY:$BR_SECRET" -H "Content-Type: application/json" \
-  -d '{"customer_ids":{"registered":"orbit-test@rohlik.cz"},"properties":{"recovery_initiated":true}}'
+  -d '{"customer_ids":{"registered":"orbit-test@email.com"},"properties":{"recovery_initiated":true}}'
 ```
 Response: `{"success":true,"errors":[]}` — HTTP 200
 Creates the customer if absent. Hard ID `registered` works.
@@ -36,7 +36,7 @@ Creates the customer if absent. Hard ID `registered` works.
 ```bash
 curl -sS -X POST "$BR_BASE/data/v2/projects/$BR_PROJECT/customers/attributes" \
   -u "$BR_KEY:$BR_SECRET" -H "Content-Type: application/json" \
-  -d '{"customer_ids":{"registered":"orbit-test@rohlik.cz"},"attributes":[{"type":"property","property":"recovery_initiated"}]}'
+  -d '{"customer_ids":{"registered":"orbit-test@email.com"},"attributes":[{"type":"property","property":"recovery_initiated"}]}'
 ```
 Response (after ingestion): `{"results":[{"success":true,"value":true}],"success":true}` — HTTP 200
 Before ingestion completes: `{"errors":{"_global":["Customer does not exist"]},"success":false}` — HTTP 404 (retry).
@@ -45,7 +45,7 @@ Before ingestion completes: `{"errors":{"_global":["Customer does not exist"]},"
 ```bash
 curl -sS -X POST "$BR_BASE/track/v2/projects/$BR_PROJECT/customers/events" \
   -u "$BR_KEY:$BR_SECRET" -H "Content-Type: application/json" \
-  -d '{"customer_ids":{"registered":"orbit-test@rohlik.cz"},"event_type":"orbit_winback_triggered","properties":{"source":"validation"}}'
+  -d '{"customer_ids":{"registered":"orbit-test@email.com"},"event_type":"orbit_winback_triggered","properties":{"source":"validation"}}'
 ```
 Response: `{"success":true,"errors":[]}` — HTTP 200
 Pattern: hand-build a scenario in Engagement triggered by this `event_type`; the agent fires the event to launch it. (No REST endpoint creates/edits scenarios — pre-build in UI.)
@@ -54,7 +54,7 @@ Pattern: hand-build a scenario in Engagement triggered by this `event_type`; the
 ```bash
 curl -sS -X POST "$BR_BASE/data/v2/projects/$BR_PROJECT/customers/events" \
   -u "$BR_KEY:$BR_SECRET" -H "Content-Type: application/json" \
-  -d '{"customer_ids":{"registered":"orbit-test@rohlik.cz"},"event_types":["orbit_winback_triggered"]}'
+  -d '{"customer_ids":{"registered":"orbit-test@email.com"},"event_types":["orbit_winback_triggered"]}'
 ```
 Response: `{"success":true,"data":[{"properties":{"source":"validation"},"timestamp":1780228246.37,"type":"orbit_winback_triggered"}]}` — HTTP 200
 Powers Step 5 monitoring and the journey-state inference workaround (no real-time scenario telemetry exists).
@@ -64,8 +64,8 @@ Powers Step 5 monitoring and the journey-state inference workaround (no real-tim
 curl -sS -X POST "$BR_BASE/track/v2/projects/$BR_PROJECT/batch" \
   -u "$BR_KEY:$BR_SECRET" -H "Content-Type: application/json" \
   -d '{"commands":[
-        {"name":"customers","data":{"customer_ids":{"registered":"orbit-seed-1@rohlik.cz"},"properties":{"first_name":"Seed","churn_risk":"high"}}},
-        {"name":"customers/events","data":{"customer_ids":{"registered":"orbit-seed-1@rohlik.cz"},"event_type":"purchase","properties":{"total_price":42.5}}}
+        {"name":"customers","data":{"customer_ids":{"registered":"orbit-seed-1@email.com"},"properties":{"first_name":"Seed","churn_risk":"high"}}},
+        {"name":"customers/events","data":{"customer_ids":{"registered":"orbit-seed-1@email.com"},"event_type":"purchase","properties":{"total_price":42.5}}}
       ]}'
 ```
 Response: `{"results":[{"success":true},{"success":true}],"success":true}` — HTTP 200
